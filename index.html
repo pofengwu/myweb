@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學三年級學習好幫手 🌟 行事曆 & 課表 & 零用錢寶盒</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mochiyom+Pop+One&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fdf8f0;
+            background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+
+        .font-fun {
+            font-family: 'Mochiyom Pop One', 'Noto Sans TC', sans-serif;
+        }
+
+        /* Subject Colors */
+        .bg-chinese { background-color: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+        .bg-math { background-color: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+        .bg-english { background-color: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .bg-social { background-color: #ffedd5; color: #9a3412; border-color: #fdba74; }
+        .bg-science { background-color: #dcfce7; color: #166534; border-color: #86efac; }
+        .bg-pe { background-color: #e0e7ff; color: #3730a3; border-color: #a5b4fc; }
+        .bg-music { background-color: #fce7f3; color: #9d174d; border-color: #f9a8d4; }
+        .bg-art { background-color: #fae8ff; color: #86198f; border-color: #f0abfc; }
+        .bg-integrative { background-color: #ccfbf1; color: #115e59; border-color: #5eead4; }
+        .bg-health { background-color: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+        .bg-stem { background-color: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+        .bg-info { background-color: #e0e7ff; color: #4338ca; border-color: #818cf8; }
+        .bg-native { background-color: #fef2f2; color: #b91c1c; border-color: #fca5a5; }
+        .bg-reading { background-color: #fef9c3; color: #854d0e; border-color: #fde047; }
+        .bg-flexible { background-color: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+        .bg-rest { background-color: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce-subtle { animation: bounce-subtle 2s infinite; }
+
+        @keyframes coin-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .animate-coin { animation: coin-pulse 1.5s infinite ease-in-out; }
+    </style>
+</head>
+<body class="min-h-screen pb-12 text-gray-800">
+
+    <header class="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 shadow-md border-b-4 border-amber-400">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <!-- Pokemon Avatar Container with Small Edit Button -->
+                <div class="relative group">
+                    <div id="avatar-btn" onclick="openPokemonModal()" class="w-16 h-16 rounded-full bg-white border-4 border-yellow-400 flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition transform overflow-hidden p-1">
+                        <img id="current-pokemon-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="寶可夢" class="w-full h-full object-contain">
+                    </div>
+                    <button onclick="openPokemonModal()" class="absolute -bottom-1 -right-1 bg-yellow-400 hover:bg-yellow-500 text-amber-950 w-6 h-6 rounded-full flex items-center justify-center text-[10px] shadow-md border-2 border-white transition transform active:scale-95" title="換寶可夢">
+                        <i class="fa-solid fa-palette"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-amber-900 font-fun tracking-wide flex items-center gap-2 group">
+                        <span id="main-title-text" contenteditable="true" onblur="saveMainTitle()" onkeydown="handleTitleKeydown(event)" class="outline-none hover:bg-amber-200/50 focus:bg-white/80 focus:ring-2 focus:ring-amber-500 px-1 rounded transition cursor-pointer" title="點擊即可編輯標題">三年級學習大冒險！</span>
+                        <i class="fa-solid fa-pen text-sm text-amber-700/60 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        <span class="text-xl">🚀</span>
+                    </h1>
+                    <p class="text-amber-800 font-bold text-sm">
+                        今日日期：<span id="header-date">2026/10/06</span> <span id="header-weekday">星期二</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Header Rewards Counter -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-amber-100/90 border-2 border-amber-400 px-4 py-2 rounded-full shadow-inner">
+                    <span class="text-2xl animate-coin">🪙</span>
+                    <div>
+                        <div class="text-[10px] text-amber-800 font-bold">零用錢總額</div>
+                        <div class="text-lg font-black text-amber-900 font-fun leading-none">$ <span id="header-money-count">0</span></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-full border-2 border-orange-300 shadow-inner">
+                    <i class="fa-solid fa-star text-2xl text-yellow-500 animate-bounce-subtle"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 font-bold">獎勵星星</div>
+                        <div class="text-lg font-black text-orange-600 font-fun leading-none" id="star-count">0</div>
+                    </div>
+                    <button onclick="showBadgeModal()" class="ml-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-2.5 py-1 rounded-xl shadow transition active:scale-95 flex items-center gap-1">
+                        <i class="fa-solid fa-trophy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="max-w-6xl mx-auto px-4 mt-6">
+        <div class="flex flex-wrap gap-2 justify-center md:justify-start border-b-2 border-orange-200 pb-2">
+            <button onclick="switchTab('tab-checklist')" id="btn-tab-checklist" class="tab-btn active text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-rose-500 text-white shadow-md">
+                <i class="fa-solid fa-bag-shopping"></i> 上學準備
+            </button>
+            <button onclick="switchTab('tab-exam')" id="btn-tab-exam" class="tab-btn text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-white text-gray-600 hover:bg-amber-100">
+                <i class="fa-solid fa-file-pen text-indigo-500"></i> 練習卷
+            </button>
+            <button onclick="switchTab('tab-money')" id="btn-tab-money" class="tab-btn text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-white text-gray-600 hover:bg-amber-100">
+                <i class="fa-solid fa-piggy-bank text-amber-500"></i> 零用錢寶盒
+            </button>
+            <button onclick="switchTab('tab-todo')" id="btn-tab-todo" class="tab-btn text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-white text-gray-600 hover:bg-amber-100">
+                <i class="fa-solid fa-list-check"></i> 重要待辦
+            </button>
+            <button onclick="switchTab('tab-timetable')" id="btn-tab-timetable" class="tab-btn text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-white text-gray-600 hover:bg-amber-100">
+                <i class="fa-solid fa-table-cells"></i> 每週課表
+            </button>
+            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn text-base font-bold px-5 py-2.5 rounded-2xl transition flex items-center gap-2 bg-white text-gray-600 hover:bg-amber-100">
+                <i class="fa-regular fa-calendar-days"></i> 月行事曆
+            </button>
+
+            <!-- JSONBin 雲端一鍵同步按鈕 -->
+            <button onclick="openJsonbinModal()" class="ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1 bg-sky-500 text-white hover:bg-sky-600 shadow">
+                <i class="fa-solid fa-cloud-arrow-up"></i> 雲端同步
+            </button>
+
+            <!-- 資料備份與還原按鈕 -->
+            <button onclick="openBackupModal()" class="text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1 bg-stone-200 text-stone-700 hover:bg-stone-300">
+                <i class="fa-solid fa-floppy-disk"></i> 備份/復原
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-6xl mx-auto px-4 mt-6">
+
+        <!-- TAB 1: Checklist -->
+        <section id="tab-checklist" class="tab-content block">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 bg-white rounded-3xl p-6 shadow-md border-2 border-orange-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-black text-rose-600 flex items-center gap-2 font-fun">
+                            <i class="fa-solid fa-backpack text-2xl"></i> 上學書包準備清單
+                        </h2>
+                        <button onclick="resetChecklist()" class="text-xs text-gray-500 hover:text-rose-500 font-bold underline">
+                            <i class="fa-solid fa-arrows-rotate"></i> 重置打勾
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6">每天出門前檢查一下，收拾好書包，準備開心上學囉！</p>
+
+                    <div id="checklist-items" class="space-y-3"></div>
+
+                    <div class="mt-8 bg-orange-50 p-4 rounded-2xl border border-orange-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-orange-800">今日收拾進度</span>
+                            <span id="checklist-progress-text" class="text-xs font-black text-orange-600">0%</span>
+                        </div>
+                        <div class="w-full bg-orange-200 rounded-full h-3 overflow-hidden">
+                            <div id="checklist-progress-bar" class="bg-gradient-to-r from-orange-400 to-rose-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-6 shadow-md border-2 border-amber-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="text-4xl">🦉</div>
+                            <div>
+                                <h3 class="font-black text-amber-900 font-fun">貓頭鷹校長的叮嚀</h3>
+                                <p class="text-xs text-amber-700 font-bold">三年級小達人秘訣</p>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-amber-900 space-y-2.5 font-medium leading-relaxed">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">●</span>
+                                <span>睡前先對著課表把對應的課本放進書包喔！</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">●</span>
+                                <span>水壺記得要裝滿滿的水，才可以隨時補充能量！</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">●</span>
+                                <span>聯絡簿要請爸爸媽媽簽名，做個負責任的好學生！</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-amber-200 text-center">
+                        <div class="text-xs text-amber-700 font-bold mb-2">完成所有準備可以獲得獎勵星星喔！</div>
+                        <div class="inline-flex items-center gap-1 bg-white px-3 py-1.5 rounded-full shadow-sm text-amber-600 font-bold text-xs">
+                            <i class="fa-solid fa-award"></i> 清單每日重置
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: Exam Practice Sheets -->
+        <section id="tab-exam" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-indigo-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-indigo-600 flex items-center gap-2 font-fun">
+                            <i class="fa-solid fa-file-pen text-2xl"></i> 練習卷闖關對照表
+                        </h2>
+                        <p class="text-sm text-gray-500">確認各科還有多少張練習卷還沒寫完，寫完打勾還能賺星星！</p>
+                    </div>
+
+                    <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl px-5 py-3 flex items-center gap-3">
+                        <i class="fa-solid fa-pen-ruler text-2xl text-indigo-500"></i>
+                        <div>
+                            <div class="text-xs font-bold text-indigo-800">尚未完成的練習卷</div>
+                            <div class="text-lg font-black text-indigo-600 font-fun">還有 <span id="total-unfinished-exams">0</span> 張</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 四大科目網格 -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 國語 -->
+                    <div class="bg-rose-50/60 rounded-2xl p-5 border-2 border-rose-200">
+                        <div class="flex items-center justify-between mb-3 border-b-2 border-rose-200 pb-2">
+                            <h3 class="font-black text-rose-800 font-fun flex items-center gap-2 text-base">
+                                📖 國語練習卷
+                            </h3>
+                            <span id="badge-count-chinese" class="text-xs font-black bg-rose-200 text-rose-800 px-2.5 py-1 rounded-full">剩 0 張</span>
+                        </div>
+                        <div id="exam-list-chinese" class="space-y-2 mb-3 min-h-[60px]"></div>
+                        <div class="flex gap-2 flex-wrap sm:flex-nowrap">
+                            <input type="text" id="input-exam-chinese" placeholder="新增國語卷描述 (例如: 第 3 單元練習卷)" class="flex-1 min-w-[140px] bg-white border border-rose-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-rose-400">
+                            <button onclick="addExamSheet('chinese')" class="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow whitespace-nowrap">新增</button>
+                            
+                            <input type="file" id="import-chinese-txt" accept=".txt" onchange="importSubjectTxt(event, 'chinese')" class="hidden">
+                            <button onclick="document.getElementById('import-chinese-txt').click()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap" title="讀取 TXT 檔，每一行新增為一張練習卷">
+                                <i class="fa-solid fa-file-import"></i> 匯入 TXT
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 數學 -->
+                    <div class="bg-blue-50/60 rounded-2xl p-5 border-2 border-blue-200">
+                        <div class="flex items-center justify-between mb-3 border-b-2 border-blue-200 pb-2">
+                            <h3 class="font-black text-blue-800 font-fun flex items-center gap-2 text-base">
+                                🔢 數學練習卷
+                            </h3>
+                            <span id="badge-count-math" class="text-xs font-black bg-blue-200 text-blue-800 px-2.5 py-1 rounded-full">剩 0 張</span>
+                        </div>
+                        <div id="exam-list-math" class="space-y-2 mb-3 min-h-[60px]"></div>
+                        <div class="flex gap-2 flex-wrap sm:flex-nowrap">
+                            <input type="text" id="input-exam-math" placeholder="新增數學卷描述 (例如: 乘法除法複習卷)" class="flex-1 min-w-[140px] bg-white border border-blue-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-blue-400">
+                            <button onclick="addExamSheet('math')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow whitespace-nowrap">新增</button>
+                            
+                            <input type="file" id="import-math-txt" accept=".txt" onchange="importSubjectTxt(event, 'math')" class="hidden">
+                            <button onclick="document.getElementById('import-math-txt').click()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap" title="讀取 TXT 檔，每一行新增為一張練習卷">
+                                <i class="fa-solid fa-file-import"></i> 匯入 TXT
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 自然 -->
+                    <div class="bg-emerald-50/60 rounded-2xl p-5 border-2 border-emerald-200">
+                        <div class="flex items-center justify-between mb-3 border-b-2 border-emerald-200 pb-2">
+                            <h3 class="font-black text-emerald-800 font-fun flex items-center gap-2 text-base">
+                                🔬 自然練習卷
+                            </h3>
+                            <span id="badge-count-science" class="text-xs font-black bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-full">剩 0 張</span>
+                        </div>
+                        <div id="exam-list-science" class="space-y-2 mb-3 min-h-[60px]"></div>
+                        <div class="flex gap-2 flex-wrap sm:flex-nowrap">
+                            <input type="text" id="input-exam-science" placeholder="新增自然卷描述 (例如: 植物的構造測驗)" class="flex-1 min-w-[140px] bg-white border border-emerald-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-emerald-400">
+                            <button onclick="addExamSheet('science')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow whitespace-nowrap">新增</button>
+                            
+                            <input type="file" id="import-science-txt" accept=".txt" onchange="importSubjectTxt(event, 'science')" class="hidden">
+                            <button onclick="document.getElementById('import-science-txt').click()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap" title="讀取 TXT 檔，每一行新增為一張練習卷">
+                                <i class="fa-solid fa-file-import"></i> 匯入 TXT
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 社會 -->
+                    <div class="bg-orange-50/60 rounded-2xl p-5 border-2 border-orange-200">
+                        <div class="flex items-center justify-between mb-3 border-b-2 border-orange-200 pb-2">
+                            <h3 class="font-black text-orange-800 font-fun flex items-center gap-2 text-base">
+                                🗺️ 社會練習卷
+                            </h3>
+                            <span id="badge-count-social" class="text-xs font-black bg-orange-200 text-orange-800 px-2.5 py-1 rounded-full">剩 0 張</span>
+                        </div>
+                        <div id="exam-list-social" class="space-y-2 mb-3 min-h-[60px]"></div>
+                        <div class="flex gap-2 flex-wrap sm:flex-nowrap">
+                            <input type="text" id="input-exam-social" placeholder="新增社會卷描述 (例如: 家鄉的地形與生活)" class="flex-1 min-w-[140px] bg-white border border-orange-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-orange-400">
+                            <button onclick="addExamSheet('social')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow whitespace-nowrap">新增</button>
+                            
+                            <input type="file" id="import-social-txt" accept=".txt" onchange="importSubjectTxt(event, 'social')" class="hidden">
+                            <button onclick="document.getElementById('import-social-txt').click()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap" title="讀取 TXT 檔，每一行新增為一張練習卷">
+                                <i class="fa-solid fa-file-import"></i> 匯入 TXT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Pocket Money -->
+        <section id="tab-money" class="tab-content hidden">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <div class="bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 rounded-3xl p-6 text-amber-950 shadow-lg border-2 border-amber-300 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="z-10">
+                            <span class="bg-white/80 text-amber-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">My Piggy Bank</span>
+                            <h2 class="text-2xl font-black font-fun mt-1">我的金幣與零用錢寶盒 🪙</h2>
+                            <p class="text-xs font-bold text-amber-900/80 mt-1">累積好習慣，賺取獎勵小金幣，朝夢想邁進！</p>
+                        </div>
+
+                        <div class="z-10 flex flex-col items-center gap-1">
+                            <div class="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border-2 border-amber-200 shadow-md text-center min-w-[160px]">
+                                <div class="text-xs font-bold text-gray-500">目前累積零用錢</div>
+                                <div class="text-3xl font-black text-amber-600 font-fun mt-0.5">$ <span id="piggy-money-display">0</span> 元</div>
+                            </div>
+                            <button onclick="resetMoneyZero()" class="text-[11px] text-amber-900/80 hover:text-amber-950 hover:underline font-bold bg-white/50 px-2.5 py-0.5 rounded-lg transition">
+                                重置歸零 🔄
+                            </button>
+                        </div>
+
+                        <div class="absolute -right-6 -bottom-6 text-9xl opacity-15 pointer-events-none">💰</div>
+                    </div>
+
+                    <!-- Daily Rules -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-amber-100">
+                        <h3 class="text-base font-black text-amber-900 font-fun mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-yellow-500"></i> 每日習慣打卡與獎勵
+                        </h3>
+
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            <div onclick="addMoneyTransaction('準時上學沒遲到 ⏰', 5)" class="bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow">⏰</div>
+                                    <div>
+                                        <div class="font-black text-emerald-900 text-sm">沒遲到</div>
+                                        <div class="text-[11px] text-emerald-700 font-bold">今天準時到校</div>
+                                    </div>
+                                </div>
+                                <span class="bg-emerald-600 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">+5 元</span>
+                            </div>
+
+                            <div onclick="addMoneyTransaction('把飯菜都吃光光 🥣', 5)" class="bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shadow">🥣</div>
+                                    <div>
+                                        <div class="font-black text-amber-900 text-sm">餐飯有吃完</div>
+                                        <div class="text-[11px] text-amber-700 font-bold">不挑食好乖！</div>
+                                    </div>
+                                </div>
+                                <span class="bg-amber-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">+5 元</span>
+                            </div>
+
+                            <div onclick="addMoneyTransaction('今天遲到了 ⚠️', -2)" class="bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-rose-400 text-white flex items-center justify-center text-xl shadow">🏃</div>
+                                    <div>
+                                        <div class="font-black text-rose-900 text-sm">遲到扣扣</div>
+                                        <div class="text-[11px] text-rose-700 font-bold">下次要提早出門</div>
+                                    </div>
+                                </div>
+                                <span class="bg-rose-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-2 元</span>
+                            </div>
+
+                            <div onclick="addMoneyTransaction('飯菜沒吃完 ⚠️', -2)" class="bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-rose-400 text-white flex items-center justify-center text-xl shadow">🥦</div>
+                                    <div>
+                                        <div class="font-black text-rose-900 text-sm">沒吃完飯扣扣</div>
+                                        <div class="text-[11px] text-rose-700 font-bold">要珍惜食物喔</div>
+                                    </div>
+                                </div>
+                                <span class="bg-rose-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-2 元</span>
+                            </div>
+
+                            <div onclick="addMoneyTransaction('超過十點睡覺 🌙', -1)" class="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group sm:col-span-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center text-xl shadow">🌙</div>
+                                    <div>
+                                        <div class="font-black text-purple-900 text-sm">超過十點睡覺</div>
+                                        <div class="text-[11px] text-purple-700 font-bold">太晚睡身體會累累，要早點休息喔！</div>
+                                    </div>
+                                </div>
+                                <span class="bg-purple-600 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-1 元</span>
+                            </div>
+                        </div>
+
+                        <!-- Chores Tracker -->
+                        <div class="mt-5 p-4 bg-sky-50 rounded-2xl border-2 border-sky-200">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                                <div>
+                                    <h4 class="font-black text-sky-900 text-sm font-fun flex items-center gap-1.5">
+                                        <i class="fa-solid fa-broom text-sky-600"></i> 每週家事挑戰（一週做三次家事 +10 元）
+                                    </h4>
+                                    <p class="text-xs text-sky-700 font-bold">點擊底下蓋章打卡，滿 3 次就可領發獎勵金！</p>
+                                </div>
+                                <button onclick="resetWeeklyChores()" class="text-[11px] text-sky-600 hover:underline font-bold self-end sm:self-auto">
+                                    重新算本週
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-center gap-3 py-2">
+                                <button onclick="markChoreStep(0)" id="chore-stamp-1" class="w-14 h-14 rounded-2xl border-4 border-dashed border-sky-300 bg-white flex flex-col items-center justify-center font-bold text-xs text-sky-400 transition hover:scale-105">
+                                    <span class="text-xl">🧹</span>
+                                    <span>第 1 次</span>
+                                </button>
+                                <div class="w-4 h-1 bg-sky-200 rounded"></div>
+                                <button onclick="markChoreStep(1)" id="chore-stamp-2" class="w-14 h-14 rounded-2xl border-4 border-dashed border-sky-300 bg-white flex flex-col items-center justify-center font-bold text-xs text-sky-400 transition hover:scale-105">
+                                    <span class="text-xl">🧺</span>
+                                    <span>第 2 次</span>
+                                </button>
+                                <div class="w-4 h-1 bg-sky-200 rounded"></div>
+                                <button onclick="markChoreStep(2)" id="chore-stamp-3" class="w-14 h-14 rounded-2xl border-4 border-dashed border-sky-300 bg-white flex flex-col items-center justify-center font-bold text-xs text-sky-400 transition hover:scale-105">
+                                    <span class="text-xl">✨</span>
+                                    <span>第 3 次</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Manual Custom Adjustment -->
+                        <div class="mt-5 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-2 items-center">
+                            <span class="text-xs font-bold text-gray-500 whitespace-nowrap">👨‍👩‍‍👧 家長手動記錄：</span>
+                            <input type="text" id="custom-money-reason" placeholder="原因 (例: 幫忙洗碗、買國語辭典...)" class="w-full sm:flex-1 bg-gray-50 border-2 border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-amber-400">
+                            <input type="number" id="custom-money-amount" placeholder="金額 (加錢填正數，扣錢填負數如 -10)" class="w-full sm:w-36 bg-gray-50 border-2 border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-amber-400">
+                            <button onclick="handleCustomMoneySubmit()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-xl shadow transition whitespace-nowrap">
+                                確定新增
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Money History -->
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-amber-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-black text-gray-800 font-fun flex items-center gap-2">
+                                <i class="fa-solid fa-receipt text-amber-500"></i> 零用錢存摺紀錄
+                            </h3>
+                            <button onclick="clearMoneyHistory()" class="text-xs text-gray-400 hover:text-rose-500 underline font-bold">
+                                清空歷史
+                            </button>
+                        </div>
+
+                        <div id="money-history-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- Wishlist Container -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-pink-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-black text-pink-600 font-fun flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xl"></i> 夢想願望清單
+                            </h3>
+                            <button onclick="openWishModal()" class="text-xs bg-pink-500 hover:bg-pink-600 text-white font-bold px-3 py-1.5 rounded-xl shadow transition">
+                                + 許願
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4 font-bold">寫下你想買的東西與價格，看看零用錢存夠了沒喔！</p>
+
+                        <div id="wishlist-container" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Todo List -->
+        <section id="tab-todo" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-amber-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-amber-600 flex items-center gap-2 font-fun">
+                            <i class="fa-solid fa-clipboard-list text-2xl"></i> 今日作業與重要待辦
+                        </h2>
+                        <p class="text-sm text-gray-500">記錄作業、明天要帶的東西或考試，完成就能得星！</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs text-gray-400 flex items-center font-bold">快速新增：</span>
+                        <button onclick="addPresetTodo('簽聯絡簿', '帶物品')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold px-2.5 py-1.5 rounded-xl border border-amber-200 transition">
+                            ✏️ 簽聯絡簿
+                        </button>
+                        <button onclick="addPresetTodo('準備體育服', '帶物品')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1.5 rounded-xl border border-emerald-200 transition">
+                            👟 體育服
+                        </button>
+                        <button onclick="addPresetTodo('複習國語聽寫', '考試')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-2.5 py-1.5 rounded-xl border border-rose-200 transition">
+                            📖 複習國語
+                        </button>
+                        <button onclick="addPresetTodo('寫數學作業', '作業')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-2.5 py-1.5 rounded-xl border border-blue-200 transition">
+                            🔢 寫數習
+                        </button>
+                    </div>
+                </div>
+
+                <form id="todo-form" onsubmit="handleCustomTodoSubmit(event)" class="mb-6 flex flex-col md:flex-row gap-2">
+                    <select id="todo-category" class="bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm font-bold text-gray-700 focus:outline-none focus:border-amber-400">
+                        <option value="作業">📝 作業</option>
+                        <option value="帶物品">🎒 帶物品</option>
+                        <option value="考試">💯 考試</option>
+                        <option value="其他">🌟 其他</option>
+                    </select>
+                    <input type="text" id="todo-input" placeholder="輸入事項名稱 (例如: 買科學實驗材料、寫國語學習單...)" required class="flex-1 bg-gray-50 border-2 border-gray-200 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-amber-400 font-medium">
+                    <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-2xl shadow transition active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-plus"></i> 新增待辦
+                    </button>
+                </form>
+
+                <div class="flex gap-2 mb-4 border-b border-gray-100 pb-2">
+                    <button onclick="filterTodo('all')" id="filter-all" class="todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500 text-white">全部</button>
+                    <button onclick="filterTodo('作業')" id="filter-作業" class="todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200">📝 作業</button>
+                    <button onclick="filterTodo('帶物品')" id="filter-帶物品" class="todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200">🎒 帶物品</button>
+                    <button onclick="filterTodo('考試')" id="filter-考試" class="todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200">💯 考試</button>
+                </div>
+
+                <div id="todo-list" class="space-y-3 min-h-[200px]"></div>
+            </div>
+        </section>
+
+        <!-- TAB 4: Timetable -->
+        <section id="tab-timetable" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-sky-100 overflow-hidden">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 font-fun">
+                            <i class="fa-solid fa-table-cells text-2xl"></i> 三年級每週課表
+                        </h2>
+                        <p class="text-sm text-gray-500">點擊任意格子即可自訂科目喔！也可以用下方的快捷科目列。</p>
+                    </div>
+
+                    <button onclick="resetTimetableConfirm()" class="text-xs bg-gray-100 hover:bg-rose-100 text-gray-600 hover:text-rose-600 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 self-start md:self-auto">
+                        <i class="fa-solid fa-rotate-left"></i> 恢復預設課表
+                    </button>
+                </div>
+
+                <div class="mb-6 p-4 bg-sky-50/80 rounded-2xl border border-sky-100">
+                    <div class="text-xs font-bold text-sky-800 mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-palette"></i> 常用科目選擇（點擊科目，再點下方課表格子換課）：
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="subject-palette"></div>
+                    <div id="selected-palette-info" class="text-xs text-sky-600 font-bold mt-2 hidden">
+                        👉 目前已選擇「<span id="active-palette-name" class="underline"></span>」，請點擊下方課表格子替換！
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[650px] border-collapse text-center">
+                        <thead>
+                            <tr class="bg-sky-100/70 text-sky-900 font-bold text-sm">
+                                <th class="p-3 rounded-tl-2xl w-20">節次</th>
+                                <th class="p-3 w-28">星期一</th>
+                                <th class="p-3 w-28">星期二</th>
+                                <th class="p-3 w-28">星期三</th>
+                                <th class="p-3 w-28">星期四</th>
+                                <th class="p-3 rounded-tr-2xl w-28">星期五</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetable-body" class="divide-y divide-gray-100 text-sm font-bold"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: Calendar -->
+        <section id="tab-calendar" class="tab-content hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-purple-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-purple-600 flex items-center gap-2 font-fun">
+                            <i class="fa-regular fa-calendar-days text-2xl"></i> 學校與個人行事曆
+                        </h2>
+                        <p class="text-sm text-gray-500">標記段考、校外教學、運動會與重要日子！</p>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-purple-50 p-2 rounded-2xl border border-purple-200">
+                        <button onclick="prevMonth()" class="w-8 h-8 rounded-xl bg-white text-purple-700 hover:bg-purple-200 flex items-center justify-center font-bold shadow-sm transition">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="calendar-month-year" class="font-black text-purple-900 text-base font-fun px-2">2026 年 10 月</span>
+                        <button onclick="nextMonth()" class="w-8 h-8 rounded-xl bg-white text-purple-700 hover:bg-purple-200 flex items-center justify-center font-bold shadow-sm transition">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center font-bold text-sm text-gray-500 mb-2">
+                    <div class="py-2 text-rose-500">日</div>
+                    <div class="py-2">一</div>
+                    <div class="py-2">二</div>
+                    <div class="py-2">三</div>
+                    <div class="py-2">四</div>
+                    <div class="py-2">五</div>
+                    <div class="py-2 text-sky-500">六</div>
+                </div>
+
+                <div id="calendar-days" class="grid grid-cols-7 gap-1.5 md:gap-2"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: JSONBin Cloud Sync (簡化版：已固化金鑰) -->
+    <div id="jsonbin-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-sky-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-sky-800 font-fun flex items-center gap-2">
+                    ☁️ 一鍵雲端同步
+                </h3>
+                <button onclick="closeModal('jsonbin-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <p class="text-xs text-gray-500 mb-6 leading-relaxed font-bold text-center">
+                金鑰已綁定！點擊上方按鈕即可在跨裝置間同步最新資料[cite: 1]。
+            </p>
+
+            <div class="space-y-3">
+                <button onclick="uploadToJsonbin()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-cloud-arrow-up text-base"></i> 將這台電腦的資料【上傳備份】
+                </button>
+                <button onclick="downloadFromJsonbin()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-cloud-arrow-down text-base"></i> 從雲端【下載最新資料】復原
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Backup & Restore -->
+    <div id="backup-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-stone-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-stone-800 font-fun flex items-center gap-2">
+                    💾 資料備份與復原
+                </h3>
+                <button onclick="closeModal('backup-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <p class="text-xs text-gray-500 mb-4 leading-relaxed font-bold">
+                升級或修改 HTML 程式碼前，可以先下載暫存檔備份。更新網頁後如果紀錄被重置，選擇該暫存檔上傳即可完整復原所有紀錄！
+            </p>
+
+            <div class="space-y-3">
+                <button onclick="exportDataBackup()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-download"></i> 下載備份暫存檔 (.json)
+                </button>
+
+                <div class="relative border-2 border-dashed border-stone-300 rounded-2xl p-4 text-center hover:bg-stone-50 transition">
+                    <input type="file" id="import-file-input" accept=".json" onchange="importDataBackup(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                    <div class="text-stone-600 font-bold text-xs flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-file-import text-stone-400 text-xl"></i>
+                        <span>點擊選擇備份檔進行匯入復原</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Pokemon Selector -->
+    <div id="pokemon-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-yellow-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-amber-900 font-fun flex items-center gap-2">
+                    ⚡ 選擇你的寶可夢夥伴
+                </h3>
+                <button onclick="closeModal('pokemon-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-80 overflow-y-auto p-1" id="pokemon-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Wish -->
+    <div id="wish-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-pink-200">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-pink-800 font-fun">✨ 新增願望清單</h3>
+                <button onclick="closeModal('wish-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <form onsubmit="handleSaveWish(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">你想買什麼？</label>
+                    <input type="text" id="wish-title-input" placeholder="例如：樂高積木、故事書、彩色筆..." required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-pink-400 font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">要花多少零用錢 ($)？</label>
+                    <input type="number" id="wish-price-input" min="1" placeholder="例如：150" required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-pink-400 font-medium">
+                </div>
+
+                <div class="mt-6 flex gap-2">
+                    <button type="button" onclick="closeModal('wish-modal')" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-2xl transition">取消</button>
+                    <button type="submit" class="w-1/2 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-2xl shadow transition">發送願望 ✨</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Calendar Event -->
+    <div id="event-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-purple-200">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-purple-800 font-fun" id="modal-date-title">新增行事曆活動</h3>
+                <button onclick="closeModal('event-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <form id="event-form" onsubmit="handleSaveCalendarEvent(event)">
+                <input type="hidden" id="event-date-input">
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">活動名稱</label>
+                        <input type="text" id="event-title-input" placeholder="例如：期中考、校外教學、生日會..." required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-purple-400 font-medium">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">活動類型 / 貼紙</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-rose-50 has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50">
+                                <input type="radio" name="event-tag" value="段考" checked class="text-rose-500">
+                                <span class="text-xs font-bold text-rose-700">💯 段考</span>
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-emerald-50 has-[:checked]:border-emerald-400 has-[:checked]:bg-emerald-50">
+                                <input type="radio" name="event-tag" value="校外教學" class="text-emerald-500">
+                                <span class="text-xs font-bold text-emerald-700">🚌 教學</span>
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-amber-50 has-[:checked]:border-amber-400 has-[:checked]:bg-amber-50">
+                                <input type="radio" name="event-tag" value="活動" class="text-amber-500">
+                                <span class="text-xs font-bold text-amber-700">🎈 活動</span>
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-blue-50 has-[:checked]:border-blue-400 has-[:checked]:bg-blue-50">
+                                <input type="radio" name="event-tag" value="作業" class="text-blue-500">
+                                <span class="text-xs font-bold text-blue-700">📝 作業</span>
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-purple-50 has-[:checked]:border-purple-400 has-[:checked]:bg-purple-50">
+                                <input type="radio" name="event-tag" value="補習" class="text-purple-500">
+                                <span class="text-xs font-bold text-purple-700">🎒 補習</span>
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-2 flex items-center gap-2 cursor-pointer hover:bg-pink-50 has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+                                <input type="radio" name="event-tag" value="生日" class="text-pink-500">
+                                <span class="text-xs font-bold text-pink-700">🎂 生日</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex gap-2">
+                    <button type="button" onclick="closeModal('event-modal')" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-2xl transition">取消</button>
+                    <button type="submit" class="w-1/2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-2xl shadow transition">儲存活動</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Timetable Cell -->
+    <div id="subject-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-sky-200">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-sky-800 font-fun">變更課表科目</h3>
+                <button onclick="closeModal('subject-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <div class="space-y-3">
+                <p class="text-xs text-gray-500 font-bold">選擇要替換的科目：</p>
+                <div class="grid grid-cols-2 gap-2" id="subject-options-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Badges / Rewards -->
+    <div id="badge-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-amber-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-amber-800 font-fun flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-yellow-500"></i> 榮譽成就獎牌
+                </h3>
+                <button onclick="closeModal('badge-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+
+            <div class="space-y-3" id="badges-container"></div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= JSONBin Fixed Credentials ================= */
+        const JSONBIN_BIN_ID = "6ac66111ffd5d16053565db5";
+        const JSONBIN_MASTER_KEY = "$2a$10$KVGpf7ukEs3dfl6SCbrEMetrSOIKh2l94l9w2eAkpYfSVf46BDe6y";
+
+        /* ================= Data Structures ================= */
+        const POKEMON_LIST = [
+            { id: 25, name: "皮卡丘", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
+            { id: 4, name: "小火龍", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" },
+            { id: 7, name: "傑尼龜", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" },
+            { id: 1, name: "妙蛙種子", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" },
+            { id: 133, name: "伊布", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png" },
+            { id: 143, name: "卡比獸", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" },
+            { id: 94, name: "耿鬼", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" },
+            { id: 151, name: "夢幻", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" },
+            { id: 658, name: "甲賀忍蛙", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/658.png" },
+            { id: 39, name: "胖丁", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png" }
+        ];
+
+        const SUBJECT_LIST = [
+            { name: "國語", code: "chinese", class: "bg-chinese", icon: "📖" },
+            { name: "數學", code: "math", class: "bg-math", icon: "🔢" },
+            { name: "英文", code: "english", class: "bg-english", icon: "🔤" },
+            { name: "自然", code: "science", class: "bg-science", icon: "🔬" },
+            { name: "社會", code: "social", class: "bg-social", icon: "🗺️" },
+            { name: "體育", code: "pe", class: "bg-pe", icon: "🏃" },
+            { name: "音樂", code: "music", class: "bg-music", icon: "🎵" },
+            { name: "美術", code: "art", class: "bg-art", icon: "🎨" },
+            { name: "綜合", code: "integrative", class: "bg-integrative", icon: "🧩" },
+            { name: "健康", code: "health", class: "bg-health", icon: "🍎" },
+            { name: "科學", code: "stem", class: "bg-stem", icon: "🧬" },
+            { name: "資訊", code: "info", class: "bg-info", icon: "💻" },
+            { name: "本土語", code: "native", class: "bg-native", icon: "🗣️" },
+            { name: "閱讀", code: "reading", class: "bg-reading", icon: "📚" },
+            { name: "放學", code: "afterschool", class: "bg-amber-100 text-amber-900 border-amber-300", icon: "🏠" },
+            { name: "彈性", code: "flexible", class: "bg-flexible", icon: "💡" },
+            { name: "休息", code: "rest", class: "bg-rest", icon: "☕" }
+        ];
+
+        const DEFAULT_TIMETABLE = [
+            { period: "早自習", time: "07:50-08:40", subjects: ["晨讀", "晨讀", "晨讀", "晨讀", "晨讀"] },
+            { period: "第一節", time: "08:40-09:20", subjects: ["國語", "綜合", "國語", "音樂", "國語"] },
+            { period: "第二節", time: "09:30-10:10", subjects: ["數學", "綜合", "綜合", "國語", "數學"] },
+            { period: "第三節", time: "10:30-11:10", subjects: ["體育", "國語", "英語", "閱讀", "英語"] },
+            { period: "第四節", time: "11:20-12:00", subjects: ["社會", "資訊", "本土語", "數學", "社會"] },
+            { period: "午休時間", time: "12:00-13:20", subjects: ["午餐/午休", "午餐/午休", "午餐/午休", "午餐/午休", "午餐/午休"] },
+            { period: "第五節", time: "13:30-14:10", subjects: ["健康", "美術", "放學", "體育", "放學"] },
+            { period: "第六節", time: "14:20-15:00", subjects: ["自然", "美術", "放學", "自然", "放學"] },
+            { period: "第七節", time: "15:10-15:50", subjects: ["科學", "社會", "放學", "自然", "放學"] }
+        ];
+
+        const DEFAULT_CHECKLIST = [
+            { id: 1, text: "帶聯絡簿 (給家長簽名)", done: false },
+            { id: 2, text: "帶水壺 (裝滿開水)", done: false },
+            { id: 3, text: "帶鉛筆盒 (鉛筆削好/橡皮擦)", done: false },
+            { id: 4, text: "帶當天課本與回家作業", done: false },
+            { id: 5, text: "帶餐具", done: false }
+        ];
+
+        const DEFAULT_EXAMS = {
+            chinese: [
+                { id: 201, text: "第 1-2 課課後複習卷", done: false },
+                { id: 202, text: "國語聽寫練習卷 A 卷", done: false }
+            ],
+            math: [
+                { id: 203, text: "加減法混合計算練習", done: false }
+            ],
+            science: [
+                { id: 204, text: "植物器官觀察學習單", done: false }
+            ],
+            social: [
+                { id: 205, text: "家鄉環境與生活練習卷", done: false }
+            ]
+        };
+
+        const DEFAULT_TODOS = [
+            { id: 101, text: "完成國語第 5 課習作", category: "作業", completed: false },
+            { id: 102, text: "準備明天體育課的球鞋", category: "帶物品", completed: false }
+        ];
+
+        const DEFAULT_WISHLIST = [
+            { id: 1, title: "神奇寶貝故事書", price: 120 },
+            { id: 2, title: "彩色雙頭繪畫筆", price: 50 }
+        ];
+
+        let appState = {
+            mainTitle: "三年級學習大冒險！",
+            pokemonId: 25,
+            stars: 0,
+            pocketMoney: 0,
+            weeklyChoresCount: 0,
+            moneyHistory: [],
+            wishlist: JSON.parse(JSON.stringify(DEFAULT_WISHLIST)),
+            checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
+            exams: JSON.parse(JSON.stringify(DEFAULT_EXAMS)),
+            todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
+            timetable: JSON.parse(JSON.stringify(DEFAULT_TIMETABLE)),
+            events: {
+                "2026-10-15": [{ title: "第二次國語聽寫測驗", tag: "段考" }],
+                "2026-10-28": [{ title: "校外教學 (動物園)", tag: "校外教學" }]
+            }
+        };
+
+        let currentCalendarDate = new Date(2026, 9, 1);
+        let activePaletteSubject = null;
+        let activeEditingCell = null;
+
+        /* ================= Initialization & Storage ================= */
+        window.onload = function() {
+            loadFromLocalStorage();
+            updateHeaderDate();
+            renderAllViews();
+        };
+
+        function renderAllViews() {
+            renderMainTitle();
+            renderPokemonAvatar();
+            renderChecklist();
+            renderExamSheets();
+            renderMoneyTab();
+            renderTodos();
+            renderSubjectPalette();
+            renderTimetable();
+            renderCalendar();
+            updateHeaderDisplays();
+        }
+
+        /* 渲染自訂標題 */
+        function renderMainTitle() {
+            const titleEl = document.getElementById('main-title-text');
+            if (titleEl) {
+                titleEl.textContent = appState.mainTitle || "三年級學習大冒險！";
+            }
+        }
+
+        /* 儲存自訂標題 */
+        function saveMainTitle() {
+            const titleEl = document.getElementById('main-title-text');
+            if (titleEl) {
+                const newTitle = titleEl.textContent.trim();
+                if (newTitle) {
+                    appState.mainTitle = newTitle;
+                } else {
+                    appState.mainTitle = "三年級學習大冒險！";
+                    titleEl.textContent = appState.mainTitle;
+                }
+                saveToLocalStorage();
+            }
+        }
+
+        /* 處理標題按 Enter 鍵完成編輯 */
+        function handleTitleKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.target.blur();
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('grade3_app_state', JSON.stringify(appState));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('grade3_app_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    appState = {
+                        ...appState,
+                        ...parsed,
+                        mainTitle: parsed.mainTitle || appState.mainTitle,
+                        events: parsed.events || appState.events,
+                        checklist: parsed.checklist || appState.checklist,
+                        exams: parsed.exams || appState.exams,
+                        todos: parsed.todos || appState.todos,
+                        wishlist: parsed.wishlist || appState.wishlist,
+                        timetable: parsed.timetable || appState.timetable
+                    };
+                } catch(e) {
+                    console.error("Failed to load state", e);
+                }
+            }
+        }
+
+        /* ================= JSONBin.io Cloud Sync (Fixed Credentials) ================= */
+        function openJsonbinModal() {
+            document.getElementById('jsonbin-modal').classList.remove('hidden');
+        }
+
+        async function uploadToJsonbin() {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    },
+                    body: JSON.stringify(appState)
+                });
+
+                if (res.ok) {
+                    alert("☁️ 🎉 成功將最新資料上傳備份至雲端！");
+                    closeModal('jsonbin-modal');
+                } else {
+                    alert("⚠️ 上傳失敗，請稍後再試。");
+                }
+            } catch (err) {
+                alert("⚠️ 雲端連線失敗：" + err.message);
+            }
+        }
+
+        async function downloadFromJsonbin() {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.record) {
+                        appState = { ...appState, ...data.record };
+                        saveToLocalStorage();
+                        renderAllViews();
+                        alert("☁️ 🎉 成功從雲端同步下載最新資料！");
+                        closeModal('jsonbin-modal');
+                    }
+                } else {
+                    alert("⚠️ 下載失敗，請稍後再試。");
+                }
+            } catch (err) {
+                alert("⚠️ 雲端連線失敗：" + err.message);
+            }
+        }
+
+        /* ================= Backup & Restore System ================= */
+        function openBackupModal() {
+            document.getElementById('backup-modal').classList.remove('hidden');
+        }
+
+        function exportDataBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const downloadAnchor = document.createElement('a');
+            const dateToday = new Date().toISOString().split('T')[0];
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `school_app_backup_${dateToday}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importDataBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if (typeof importedState === 'object' && importedState !== null) {
+                        appState = { ...appState, ...importedState };
+                        saveToLocalStorage();
+                        renderAllViews();
+                        alert("🎉 資料成功復原！");
+                        closeModal('backup-modal');
+                    } else {
+                        alert("⚠️ 備份檔案格式不正確！");
+                    }
+                } catch(err) {
+                    alert("⚠️ 無法讀取此備份檔案！");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function updateHeaderDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            
+            document.getElementById('header-date').textContent = `${year}/${month}/${date}`;
+            document.getElementById('header-weekday').textContent = weekdays[now.getDay()];
+        }
+
+        /* Pokemon Avatar Selection */
+        function renderPokemonAvatar() {
+            const poke = POKEMON_LIST.find(p => p.id === appState.pokemonId) || POKEMON_LIST[0];
+            document.getElementById('current-pokemon-img').src = poke.img;
+        }
+
+        function openPokemonModal() {
+            const grid = document.getElementById('pokemon-grid');
+            grid.innerHTML = '';
+
+            POKEMON_LIST.forEach(poke => {
+                const item = document.createElement('div');
+                const isSelected = poke.id === appState.pokemonId;
+                item.className = `flex flex-col items-center p-2 rounded-2xl border-2 cursor-pointer transition transform hover:scale-105 ${isSelected ? 'border-amber-500 bg-amber-50' : 'border-gray-100 hover:border-amber-300 bg-white'}`;
+                item.innerHTML = `
+                    <img src="${poke.img}" alt="${poke.name}" class="w-16 h-16 object-contain mb-1">
+                    <span class="text-xs font-bold text-gray-800">${poke.name}</span>
+                `;
+                item.onclick = () => {
+                    appState.pokemonId = poke.id;
+                    saveToLocalStorage();
+                    renderPokemonAvatar();
+                    closeModal('pokemon-modal');
+                    triggerConfettiSmall();
+                };
+                grid.appendChild(item);
+            });
+
+            document.getElementById('pokemon-modal').classList.remove('hidden');
+        }
+
+        function addStars(amount) {
+            appState.stars = (appState.stars || 0) + amount;
+            updateHeaderDisplays();
+            saveToLocalStorage();
+            triggerConfetti();
+        }
+
+        function updateHeaderDisplays() {
+            document.getElementById('star-count').textContent = appState.stars || 0;
+            document.getElementById('header-money-count').textContent = appState.pocketMoney || 0;
+            const piggyDisp = document.getElementById('piggy-money-display');
+            if (piggyDisp) piggyDisp.textContent = appState.pocketMoney || 0;
+        }
+
+        /* ================= Tab Switcher ================= */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-rose-500', 'bg-indigo-500', 'bg-amber-500', 'bg-sky-500', 'bg-purple-500', 'text-white', 'shadow-md');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(!activeBtn) return;
+            activeBtn.classList.remove('bg-white', 'text-gray-600');
+
+            if(tabId === 'tab-checklist') activeBtn.classList.add('bg-rose-500', 'text-white', 'shadow-md');
+            if(tabId === 'tab-exam') activeBtn.classList.add('bg-indigo-500', 'text-white', 'shadow-md');
+            if(tabId === 'tab-money') activeBtn.classList.add('bg-amber-500', 'text-white', 'shadow-md');
+            if(tabId === 'tab-todo') activeBtn.classList.add('bg-amber-500', 'text-white', 'shadow-md');
+            if(tabId === 'tab-timetable') activeBtn.classList.add('bg-sky-500', 'text-white', 'shadow-md');
+            if(tabId === 'tab-calendar') activeBtn.classList.add('bg-purple-500', 'text-white', 'shadow-md');
+        }
+
+        /* ================= Exam Sheets Logic ================= */
+        function renderExamSheets() {
+            const subjects = ['chinese', 'math', 'science', 'social'];
+            let totalUnfinished = 0;
+
+            if (!appState.exams) {
+                appState.exams = JSON.parse(JSON.stringify(DEFAULT_EXAMS));
+            }
+
+            subjects.forEach(subj => {
+                const listContainer = document.getElementById(`exam-list-${subj}`);
+                if (!listContainer) return;
+                listContainer.innerHTML = '';
+
+                const sheetList = appState.exams[subj] || [];
+                const unfinishedCount = sheetList.filter(item => !item.done).length;
+                totalUnfinished += unfinishedCount;
+
+                const badge = document.getElementById(`badge-count-${subj}`);
+                if (badge) {
+                    badge.textContent = `剩 ${unfinishedCount} 張`;
+                }
+
+                if (sheetList.length === 0) {
+                    listContainer.innerHTML = `<div class="text-xs text-gray-400 py-3 text-center">尚無練習卷，可新增卷別喔！</div>`;
+                    return;
+                }
+
+                sheetList.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.className = `flex items-center justify-between p-2.5 rounded-xl border transition ${item.done ? 'bg-gray-100 border-gray-200 text-gray-400 line-through' : 'bg-white border-gray-200 shadow-sm'}`;
+                    row.innerHTML = `
+                        <label class="flex items-center gap-2.5 cursor-pointer flex-1 select-none">
+                            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleExamSheet('${subj}', ${index})" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-400">
+                            <span class="text-xs font-bold ${item.done ? 'text-gray-400' : 'text-gray-800'}">${item.text}</span>
+                        </label>
+                        <button onclick="deleteExamSheet('${subj}', ${index})" class="text-gray-300 hover:text-rose-500 text-xs px-1" title="刪除">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            });
+
+            document.getElementById('total-unfinished-exams').textContent = totalUnfinished;
+        }
+
+        function toggleExamSheet(subj, index) {
+            if (appState.exams && appState.exams[subj]) {
+                appState.exams[subj][index].done = !appState.exams[subj][index].done;
+                if (appState.exams[subj][index].done) {
+                    addStars(2);
+                }
+                saveToLocalStorage();
+                renderExamSheets();
+            }
+        }
+
+        function addExamSheet(subj) {
+            const input = document.getElementById(`input-exam-${subj}`);
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!appState.exams) appState.exams = {};
+            if (!appState.exams[subj]) appState.exams[subj] = [];
+
+            appState.exams[subj].push({
+                id: Date.now() + Math.random(),
+                text: text,
+                done: false
+            });
+
+            input.value = '';
+            saveToLocalStorage();
+            renderExamSheets();
+        }
+
+        function importSubjectTxt(event, subj) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const subjectNames = {
+                chinese: '國語',
+                math: '數學',
+                science: '自然',
+                social: '社會'
+            };
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const textContent = e.target.result;
+                const lines = textContent.split(/\r?\n/);
+                let addedCount = 0;
+
+                if (!appState.exams) appState.exams = {};
+                if (!appState.exams[subj]) appState.exams[subj] = [];
+
+                lines.forEach(line => {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine) {
+                        appState.exams[subj].push({
+                            id: Date.now() + Math.random(),
+                            text: trimmedLine,
+                            done: false
+                        });
+                        addedCount++;
+                    }
+                });
+
+                saveToLocalStorage();
+                renderExamSheets();
+                const subjName = subjectNames[subj] || subj;
+                alert(`🎉 成功匯入 ${addedCount} 項${subjName}練習卷！`);
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function deleteExamSheet(subj, index) {
+            if (appState.exams && appState.exams[subj]) {
+                appState.exams[subj].splice(index, 1);
+                saveToLocalStorage();
+                renderExamSheets();
+            }
+        }
+
+        /* ================= Money System ================= */
+        function renderMoneyTab() {
+            updateHeaderDisplays();
+            renderMoneyHistory();
+            renderChoreStamps();
+            renderWishlist();
+        }
+
+        function addMoneyTransaction(reason, amount) {
+            appState.pocketMoney = (appState.pocketMoney || 0) + amount;
+            
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+
+            if (!appState.moneyHistory) appState.moneyHistory = [];
+
+            appState.moneyHistory.unshift({
+                id: Date.now(),
+                date: dateStr,
+                reason: reason,
+                amount: amount,
+                balance: appState.pocketMoney
+            });
+
+            saveToLocalStorage();
+            renderMoneyTab();
+
+            if (amount > 0) {
+                triggerCoinConfetti();
+                playCoinSound();
+            }
+        }
+
+        function resetMoneyZero() {
+            if (confirm("確定要將目前的零用錢總和歸零嗎？")) {
+                appState.pocketMoney = 0;
+                saveToLocalStorage();
+                renderMoneyTab();
+            }
+        }
+
+        function renderMoneyHistory() {
+            const container = document.getElementById('money-history-list');
+            container.innerHTML = '';
+
+            if (!appState.moneyHistory || appState.moneyHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-gray-400 text-xs">
+                        目前還沒有零用錢交易紀錄喔！
+                    </div>
+                `;
+                return;
+            }
+
+            appState.moneyHistory.forEach(item => {
+                const isPositive = item.amount >= 0;
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100 text-xs";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-white px-2 py-0.5 rounded-lg border text-gray-400 font-bold">${item.date}</span>
+                        <span class="font-bold text-gray-800">${item.reason}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-black ${isPositive ? 'text-emerald-600' : 'text-rose-600'} text-sm">
+                            ${isPositive ? '+' : ''}${item.amount} 元
+                        </span>
+                        <button onclick="deleteMoneyHistoryItem(${item.id})" class="text-gray-300 hover:text-rose-500">✕</button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function deleteMoneyHistoryItem(id) {
+            appState.moneyHistory = appState.moneyHistory.filter(i => i.id !== id);
+            saveToLocalStorage();
+            renderMoneyHistory();
+        }
+
+        function clearMoneyHistory() {
+            if (confirm("確定要清除所有零用錢歷史紀錄嗎？")) {
+                appState.moneyHistory = [];
+                saveToLocalStorage();
+                renderMoneyHistory();
+            }
+        }
+
+        function handleCustomMoneySubmit() {
+            const reasonInput = document.getElementById('custom-money-reason');
+            const amountInput = document.getElementById('custom-money-amount');
+
+            const reason = reasonInput.value.trim() || "家長手動調整";
+            const amount = parseInt(amountInput.value);
+
+            if (isNaN(amount) || amount === 0) {
+                alert("請輸入有效的加減金額喔！");
+                return;
+            }
+
+            addMoneyTransaction(reason, amount);
+            reasonInput.value = '';
+            amountInput.value = '';
+        }
+
+        function markChoreStep(stepIndex) {
+            let current = appState.weeklyChoresCount || 0;
+            if (stepIndex === current) {
+                current++;
+                appState.weeklyChoresCount = current;
+
+                if (current === 3) {
+                    addMoneyTransaction('一週做三次家事獎勵 🎉', 10);
+                } else {
+                    playCoinSound();
+                }
+                saveToLocalStorage();
+                renderChoreStamps();
+            }
+        }
+
+        function renderChoreStamps() {
+            const current = appState.weeklyChoresCount || 0;
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`chore-stamp-${i}`);
+                if (!btn) continue;
+                if (i <= current) {
+                    btn.className = "w-14 h-14 rounded-2xl border-4 border-emerald-400 bg-emerald-100 flex flex-col items-center justify-center font-bold text-xs text-emerald-800 shadow-md transform scale-105";
+                    btn.innerHTML = `<span class="text-xl">✅</span><span>已完成</span>`;
+                } else {
+                    btn.className = "w-14 h-14 rounded-2xl border-4 border-dashed border-sky-300 bg-white flex flex-col items-center justify-center font-bold text-xs text-sky-400 transition hover:scale-105 cursor-pointer";
+                    btn.innerHTML = `<span class="text-xl">${i===1?'🧹':i===2?'🧺':'✨'}</span><span>第 ${i} 次</span>`;
+                }
+            }
+        }
+
+        function resetWeeklyChores() {
+            appState.weeklyChoresCount = 0;
+            saveToLocalStorage();
+            renderChoreStamps();
+        }
+
+        /* Wishlist Logic */
+        function renderWishlist() {
+            const container = document.getElementById('wishlist-container');
+            container.innerHTML = '';
+
+            const currentMoney = appState.pocketMoney || 0;
+
+            if (!appState.wishlist || appState.wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-300 text-xs">
+                        尚無願望，快點擊右上角「+ 許願」吧！
+                    </div>
+                `;
+                return;
+            }
+
+            appState.wishlist.forEach((wish) => {
+                const percent = Math.min(100, Math.round((currentMoney / wish.price) * 100));
+                const isFulfilled = currentMoney >= wish.price;
+
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-2xl border-2 border-pink-100 bg-pink-50/50 space-y-2";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-gray-800 text-sm flex items-center gap-1.5">
+                            🎁 ${wish.title}
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-pink-600">$ ${wish.price} 元</span>
+                            <button onclick="deleteWish(${wish.id})" class="text-gray-300 hover:text-rose-500 text-xs">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-pink-200 rounded-full h-2.5 overflow-hidden">
+                        <div class="bg-gradient-to-r from-pink-400 to-rose-500 h-2.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-[11px] font-bold">
+                        <span class="${isFulfilled ? 'text-emerald-600 font-black' : 'text-gray-400'}">
+                            ${isFulfilled ? '🎉 已存夠可以買囉！' : `進度 ${percent}%`}
+                        </span>
+                        <span class="text-gray-400">目前 $${currentMoney} / $${wish.price}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openWishModal() {
+            document.getElementById('wish-title-input').value = '';
+            document.getElementById('wish-price-input').value = '';
+            document.getElementById('wish-modal').classList.remove('hidden');
+        }
+
+        function handleSaveWish(e) {
+            e.preventDefault();
+            const title = document.getElementById('wish-title-input').value.trim();
+            const price = parseInt(document.getElementById('wish-price-input').value);
+
+            if (!title || isNaN(price) || price <= 0) return;
+
+            if (!appState.wishlist) appState.wishlist = [];
+            appState.wishlist.push({ id: Date.now(), title, price });
+
+            saveToLocalStorage();
+            renderWishlist();
+            closeModal('wish-modal');
+        }
+
+        function deleteWish(id) {
+            appState.wishlist = appState.wishlist.filter(w => w.id !== id);
+            saveToLocalStorage();
+            renderWishlist();
+        }
+
+        /* ================= Checklist Logic ================= */
+        function renderChecklist() {
+            const container = document.getElementById('checklist-items');
+            container.innerHTML = '';
+
+            let doneCount = 0;
+
+            appState.checklist.forEach((item, index) => {
+                if (item.done) doneCount++;
+                const itemEl = document.createElement('div');
+                itemEl.className = `flex items-center justify-between p-3.5 rounded-2xl border-2 transition ${item.done ? 'bg-emerald-50 border-emerald-200 text-gray-400 line-through' : 'bg-white border-gray-100 hover:border-orange-200'}`;
+                itemEl.innerHTML = `
+                    <label class="flex items-center gap-3 cursor-pointer w-full select-none">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklist(${index})" class="w-5 h-5 rounded-lg text-rose-500 focus:ring-rose-400">
+                        <span class="text-sm font-bold ${item.done ? 'text-emerald-700' : 'text-gray-700'}">${item.text}</span>
+                    </label>
+                `;
+                container.appendChild(itemEl);
+            });
+
+            const percent = Math.round((doneCount / appState.checklist.length) * 100);
+            document.getElementById('checklist-progress-bar').style.width = `${percent}%`;
+            document.getElementById('checklist-progress-text').textContent = `${percent}%`;
+        }
+
+        function toggleChecklist(index) {
+            appState.checklist[index].done = !appState.checklist[index].done;
+            if (appState.checklist[index].done) {
+                addStars(1);
+            }
+            saveToLocalStorage();
+            renderChecklist();
+        }
+
+        function resetChecklist() {
+            appState.checklist.forEach(i => i.done = false);
+            saveToLocalStorage();
+            renderChecklist();
+        }
+
+        /* ================= Todo List Logic ================= */
+        let currentTodoFilter = 'all';
+
+        function renderTodos() {
+            const container = document.getElementById('todo-list');
+            container.innerHTML = '';
+
+            const filtered = appState.todos.filter(t => currentTodoFilter === 'all' || t.category === currentTodoFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-gray-400">
+                        <div class="text-4xl mb-2">🎉</div>
+                        <p class="font-bold text-sm">目前的類別沒有待辦事項喔！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach((todo) => {
+                const itemEl = document.createElement('div');
+                const catBadgeClass = getCategoryBadgeStyle(todo.category);
+                
+                itemEl.className = `flex items-center justify-between p-3.5 rounded-2xl border-2 transition ${todo.completed ? 'bg-gray-50 border-gray-200 text-gray-400' : 'bg-white border-amber-100 hover:border-amber-300 shadow-sm'}`;
+                itemEl.innerHTML = `
+                    <div class="flex items-center gap-3 flex-1">
+                        <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})" class="w-5 h-5 rounded-lg text-amber-500 focus:ring-amber-400 cursor-pointer">
+                        <span class="text-xs px-2.5 py-1 rounded-xl font-bold ${catBadgeClass}">${todo.category}</span>
+                        <span class="text-sm font-bold ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}">${todo.text}</span>
+                    </div>
+                    <button onclick="deleteTodo(${todo.id})" class="text-gray-300 hover:text-rose-500 p-1.5 transition" title="刪除">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(itemEl);
+            });
+        }
+
+        function getCategoryBadgeStyle(category) {
+            switch(category) {
+                case '作業': return 'bg-blue-100 text-blue-700';
+                case '帶物品': return 'bg-emerald-100 text-emerald-700';
+                case '考試': return 'bg-rose-100 text-rose-700';
+                default: return 'bg-purple-100 text-purple-700';
+            }
+        }
+
+        function handleCustomTodoSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('todo-input');
+            const category = document.getElementById('todo-category').value;
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            appState.todos.push({
+                id: Date.now(),
+                text: text,
+                category: category,
+                completed: false
+            });
+
+            input.value = '';
+            saveToLocalStorage();
+            renderTodos();
+        }
+
+        function addPresetTodo(text, category) {
+            appState.todos.push({
+                id: Date.now(),
+                text: text,
+                category: category,
+                completed: false
+            });
+            saveToLocalStorage();
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            const todo = appState.todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                if (todo.completed) {
+                    addStars(2);
+                }
+                saveToLocalStorage();
+                renderTodos();
+            }
+        }
+
+        function deleteTodo(id) {
+            appState.todos = appState.todos.filter(t => t.id !== id);
+            saveToLocalStorage();
+            renderTodos();
+        }
+
+        function filterTodo(cat) {
+            currentTodoFilter = cat;
+            document.querySelectorAll('.todo-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            document.getElementById(`filter-${cat}`).classList.remove('bg-gray-100', 'text-gray-600');
+            document.getElementById(`filter-${cat}`).classList.add('bg-amber-500', 'text-white');
+            renderTodos();
+        }
+
+        /* ================= Timetable Logic ================= */
+        function renderSubjectPalette() {
+            const container = document.getElementById('subject-palette');
+            container.innerHTML = '';
+
+            SUBJECT_LIST.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = `text-xs font-bold px-3 py-1.5 rounded-xl border transition ${sub.class} hover:scale-105 active:scale-95`;
+                btn.innerHTML = `${sub.icon} ${sub.name}`;
+                btn.onclick = () => selectPaletteSubject(sub);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectPaletteSubject(sub) {
+            activePaletteSubject = sub;
+            document.getElementById('selected-palette-info').classList.remove('hidden');
+            document.getElementById('active-palette-name').textContent = `${sub.icon} ${sub.name}`;
+        }
+
+        function renderTimetable() {
+            const tbody = document.getElementById('timetable-body');
+            tbody.innerHTML = '';
+
+            appState.timetable.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                
+                const periodTd = document.createElement('td');
+                periodTd.className = "p-2 bg-gray-50 border-r border-gray-100";
+                periodTd.innerHTML = `
+                    <div class="text-sky-900 font-black">${row.period}</div>
+                    <div class="text-[10px] text-gray-400 font-normal">${row.time}</div>
+                `;
+                tr.appendChild(periodTd);
+
+                row.subjects.forEach((subjName, dayIndex) => {
+                    const td = document.createElement('td');
+                    td.className = "p-1.5 border border-gray-100";
+
+                    const subjectObj = SUBJECT_LIST.find(s => s.name === subjName) || { name: subjName, class: 'bg-gray-50 text-gray-700 border-gray-200', icon: '📝' };
+
+                    const cellBtn = document.createElement('button');
+                    cellBtn.className = `w-full py-2.5 px-2 rounded-xl border text-xs font-bold transition duration-200 hover:shadow-md ${subjectObj.class}`;
+                    cellBtn.innerHTML = `<span>${subjectObj.icon || ''}</span> <span>${subjName}</span>`;
+                    
+                    cellBtn.onclick = () => handleCellClick(rowIndex, dayIndex);
+
+                    td.appendChild(cellBtn);
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleCellClick(rowIndex, dayIndex) {
+            if (activePaletteSubject) {
+                appState.timetable[rowIndex].subjects[dayIndex] = activePaletteSubject.name;
+                saveToLocalStorage();
+                renderTimetable();
+            } else {
+                activeEditingCell = { rowIndex, dayIndex };
+                openSubjectModal();
+            }
+        }
+
+        function openSubjectModal() {
+            const grid = document.getElementById('subject-options-grid');
+            grid.innerHTML = '';
+
+            SUBJECT_LIST.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = `p-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${sub.class}`;
+                btn.innerHTML = `${sub.icon} ${sub.name}`;
+                btn.onclick = () => {
+                    if (activeEditingCell) {
+                        appState.timetable[activeEditingCell.rowIndex].subjects[activeEditingCell.dayIndex] = sub.name;
+                        saveToLocalStorage();
+                        renderTimetable();
+                        closeModal('subject-modal');
+                    }
+                };
+                grid.appendChild(btn);
+            });
+
+            document.getElementById('subject-modal').classList.remove('hidden');
+        }
+
+        function resetTimetableConfirm() {
+            if (confirm("確定要將課表恢復成預設範本嗎？")) {
+                appState.timetable = JSON.parse(JSON.stringify(DEFAULT_TIMETABLE));
+                saveToLocalStorage();
+                renderTimetable();
+            }
+        }
+
+        /* ================= Calendar Logic ================= */
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            document.getElementById('calendar-month-year').textContent = `${year} 年 ${month + 1} 月`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptySlot = document.createElement('div');
+                emptySlot.className = "h-20 bg-gray-50/50 rounded-2xl border border-dashed border-gray-100";
+                calendarDays.appendChild(emptySlot);
+            }
+
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = dateKey === todayStr;
+
+                const dayCard = document.createElement('div');
+                dayCard.className = `h-20 md:h-24 p-1.5 rounded-2xl border-2 flex flex-col justify-between transition cursor-pointer hover:border-purple-300 hover:shadow-sm ${isToday ? 'bg-purple-50 border-purple-400' : 'bg-white border-gray-100'}`;
+                
+                let dayHeader = `<div class="flex justify-between items-center"><span class="text-xs font-black ${isToday ? 'bg-purple-600 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-gray-700'}">${day}</span>`;
+                dayHeader += `<button onclick="openAddEventModal('${dateKey}')" class="text-[10px] text-gray-300 hover:text-purple-600"><i class="fa-solid fa-plus"></i></button></div>`;
+
+                let eventsHtml = '<div class="space-y-1 overflow-y-auto max-h-14">';
+                if (appState.events && appState.events[dateKey]) {
+                    appState.events[dateKey].forEach((ev, idx) => {
+                        const tagColor = getEventTagColor(ev.tag);
+                        eventsHtml += `
+                            <div class="text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${tagColor} truncate flex items-center justify-between group">
+                                <span>${ev.title}</span>
+                                <button onclick="deleteEvent('${dateKey}', ${idx}, event)" class="hidden group-hover:block text-rose-500 hover:text-rose-700 ml-1">✕</button>
+                            </div>
+                        `;
+                    });
+                }
+                eventsHtml += '</div>';
+
+                dayCard.innerHTML = dayHeader + eventsHtml;
+                dayCard.onclick = (e) => {
+                    if (e.target.tagName !== 'I' && e.target.tagName !== 'BUTTON') {
+                        openAddEventModal(dateKey);
+                    }
+                };
+
+                calendarDays.appendChild(dayCard);
+            }
+        }
+
+        function getEventTagColor(tag) {
+            switch(tag) {
+                case '段考': return 'bg-rose-100 text-rose-800';
+                case '校外教學': return 'bg-emerald-100 text-emerald-800';
+                case '生日': return 'bg-pink-100 text-pink-800';
+                case '補習': return 'bg-purple-100 text-purple-800';
+                case '作業': return 'bg-blue-100 text-blue-800';
+                default: return 'bg-amber-100 text-amber-800';
+            }
+        }
+
+        function prevMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function openAddEventModal(dateKey) {
+            document.getElementById('event-date-input').value = dateKey;
+            document.getElementById('modal-date-title').textContent = `新增活動 (${dateKey})`;
+            document.getElementById('event-title-input').value = '';
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        function handleSaveCalendarEvent(e) {
+            e.preventDefault();
+            const dateKey = document.getElementById('event-date-input').value;
+            const title = document.getElementById('event-title-input').value.trim();
+            const tag = document.querySelector('input[name="event-tag"]:checked').value;
+
+            if (!title) return;
+
+            if (!appState.events[dateKey]) {
+                appState.events[dateKey] = [];
+            }
+
+            appState.events[dateKey].push({ title, tag });
+            saveToLocalStorage();
+            renderCalendar();
+            closeModal('event-modal');
+        }
+
+        function deleteEvent(dateKey, index, e) {
+            e.stopPropagation();
+            if (appState.events[dateKey]) {
+                appState.events[dateKey].splice(index, 1);
+                if (appState.events[dateKey].length === 0) {
+                    delete appState.events[dateKey];
+                }
+                saveToLocalStorage();
+                renderCalendar();
+            }
+        }
+
+        /* ================= Badges & FX ================= */
+        function showBadgeModal() {
+            const container = document.getElementById('badges-container');
+            container.innerHTML = '';
+
+            const stars = appState.stars || 0;
+
+            const badgeList = [
+                { name: "超級新星", minStars: 1, icon: "🌟", desc: "完成第一個任務！" },
+                { name: "準備小達人", minStars: 10, icon: "🎒", desc: "累積獲得 10 顆星星" },
+                { name: "自律小能手", minStars: 25, icon: "🏆", desc: "累積獲得 25 顆星星" },
+                { name: "三年級學霸", minStars: 50, icon: "👑", desc: "累積獲得 50 顆星星" }
+            ];
+
+            badgeList.forEach(b => {
+                const unlocked = stars >= b.minStars;
+                const div = document.createElement('div');
+                div.className = `flex items-center gap-4 p-3 rounded-2xl border-2 ${unlocked ? 'bg-amber-50 border-amber-300' : 'bg-gray-50 border-gray-200 opacity-60'}`;
+                div.innerHTML = `
+                    <div class="text-3xl p-2 rounded-2xl bg-white shadow-sm">${b.icon}</div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-black text-sm text-gray-800">${b.name}</h4>
+                            <span class="text-xs font-bold ${unlocked ? 'text-emerald-600' : 'text-gray-400'}">
+                                ${unlocked ? '已解鎖 🎉' : `需要 ${b.minStars} ⭐`}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500">${b.desc}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('badge-modal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function triggerConfetti() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 60,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            }
+            playBeepSound();
+        }
+
+        function triggerCoinConfetti() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 40,
+                    spread: 50,
+                    colors: ['#f59e0b', '#fbbf24', '#d97706'],
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function triggerConfettiSmall() {
+            if (window.confetti) {
+                confetti({
+                    particleCount: 20,
+                    spread: 40,
+                    origin: { y: 0.2 }
+                });
+            }
+        }
+
+        function playBeepSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } catch(e) {}
+        }
+
+        function playCoinSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(987.77, now);
+                osc.frequency.setValueAtTime(1318.51, now + 0.08);
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>
