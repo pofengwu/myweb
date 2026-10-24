@@ -63,7 +63,7 @@
 </head>
 <body class="min-h-screen pb-12 text-gray-800">
 
-    <header class="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 shadow-md border-b-4 border-amber-400">
+    <header id="main-header" class="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 shadow-md border-b-4 border-amber-400 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <!-- Pokemon Avatar Container with Small Edit Button -->
@@ -77,6 +77,15 @@
                 </div>
 
                 <div>
+                    <div class="flex items-center gap-2">
+                        <!-- User Selector Dropdown -->
+                        <div class="relative inline-block text-left mb-1">
+                            <select id="user-selector" onchange="switchUser(this.value)" class="bg-white/90 hover:bg-white text-amber-950 font-black text-sm px-3 py-1 rounded-full border-2 border-amber-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-600 cursor-pointer">
+                                <option value="sister">👧 姊姊的空間</option>
+                                <option value="brother">👦 弟弟的空間</option>
+                            </select>
+                        </div>
+                    </div>
                     <h1 class="text-2xl md:text-3xl font-black text-amber-900 font-fun tracking-wide flex items-center gap-2 group">
                         <span id="main-title-text" contenteditable="true" onblur="saveMainTitle()" onkeydown="handleTitleKeydown(event)" class="outline-none hover:bg-amber-200/50 focus:bg-white/80 focus:ring-2 focus:ring-amber-500 px-1 rounded transition cursor-pointer" title="點擊即可編輯標題">三年級學習大冒險！</span>
                         <i class="fa-solid fa-pen text-sm text-amber-700/60 opacity-0 group-hover:opacity-100 transition-opacity"></i>
@@ -133,9 +142,9 @@
                 <i class="fa-regular fa-calendar-days"></i> 月行事曆
             </button>
 
-            <!-- JSONBin 雲端一鍵同步按鈕 -->
-            <button onclick="openJsonbinModal()" class="ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1 bg-sky-500 text-white hover:bg-sky-600 shadow">
-                <i class="fa-solid fa-cloud-arrow-up"></i> 雲端同步
+            <!-- 全自動雲端狀態提示按鈕 -->
+            <button onclick="openJsonbinModal()" id="cloud-status-btn" class="ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1.5 bg-emerald-500 text-white shadow">
+                <i class="fa-solid fa-cloud"></i> <span id="cloud-status-text">雲端已同步</span>
             </button>
 
             <!-- 資料備份與還原按鈕 -->
@@ -342,66 +351,16 @@
 
                     <!-- Daily Rules -->
                     <div class="bg-white rounded-3xl p-6 shadow-md border-2 border-amber-100">
-                        <h3 class="text-base font-black text-amber-900 font-fun mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-yellow-500"></i> 每日習慣打卡與獎勵
-                        </h3>
-
-                        <div class="grid sm:grid-cols-2 gap-3">
-                            <div onclick="addMoneyTransaction('準時上學沒遲到 ⏰', 5)" class="bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow">⏰</div>
-                                    <div>
-                                        <div class="font-black text-emerald-900 text-sm">沒遲到</div>
-                                        <div class="text-[11px] text-emerald-700 font-bold">今天準時到校</div>
-                                    </div>
-                                </div>
-                                <span class="bg-emerald-600 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">+5 元</span>
-                            </div>
-
-                            <div onclick="addMoneyTransaction('把飯菜都吃光光 🥣', 5)" class="bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shadow">🥣</div>
-                                    <div>
-                                        <div class="font-black text-amber-900 text-sm">餐飯有吃完</div>
-                                        <div class="text-[11px] text-amber-700 font-bold">不挑食好乖！</div>
-                                    </div>
-                                </div>
-                                <span class="bg-amber-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">+5 元</span>
-                            </div>
-
-                            <div onclick="addMoneyTransaction('今天遲到了 ⚠️', -2)" class="bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-rose-400 text-white flex items-center justify-center text-xl shadow">🏃</div>
-                                    <div>
-                                        <div class="font-black text-rose-900 text-sm">遲到扣扣</div>
-                                        <div class="text-[11px] text-rose-700 font-bold">下次要提早出門</div>
-                                    </div>
-                                </div>
-                                <span class="bg-rose-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-2 元</span>
-                            </div>
-
-                            <div onclick="addMoneyTransaction('飯菜沒吃完 ⚠️', -2)" class="bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-rose-400 text-white flex items-center justify-center text-xl shadow">🥦</div>
-                                    <div>
-                                        <div class="font-black text-rose-900 text-sm">沒吃完飯扣扣</div>
-                                        <div class="text-[11px] text-rose-700 font-bold">要珍惜食物喔</div>
-                                    </div>
-                                </div>
-                                <span class="bg-rose-500 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-2 元</span>
-                            </div>
-
-                            <div onclick="addMoneyTransaction('超過十點睡覺 🌙', -1)" class="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group sm:col-span-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center text-xl shadow">🌙</div>
-                                    <div>
-                                        <div class="font-black text-purple-900 text-sm">超過十點睡覺</div>
-                                        <div class="text-[11px] text-purple-700 font-bold">太晚睡身體會累累，要早點休息喔！</div>
-                                    </div>
-                                </div>
-                                <span class="bg-purple-600 text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">-1 元</span>
-                            </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-black text-amber-900 font-fun flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-yellow-500"></i> 每日習慣打卡與獎勵
+                            </h3>
+                            <button onclick="openHabitModal()" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-plus"></i> 新增打卡項目
+                            </button>
                         </div>
+
+                        <div id="habit-rules-container" class="grid sm:grid-cols-2 gap-3"></div>
 
                         <!-- Chores Tracker -->
                         <div class="mt-5 p-4 bg-sky-50 rounded-2xl border-2 border-sky-200">
@@ -598,6 +557,36 @@
                     </div>
                 </div>
 
+                <!-- 考試倒數設定區塊 -->
+                <div class="mb-6 p-4 bg-gradient-to-r from-rose-50 via-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 shadow-sm">
+                    <h3 class="text-sm font-black text-purple-900 font-fun mb-3 flex items-center gap-2">
+                        🎯 段考倒數計時器
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- 期中考 -->
+                        <div class="bg-white p-3.5 rounded-xl border border-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-black text-rose-800 bg-rose-100 px-2 py-0.5 rounded-md">💯 期中考</span>
+                                    <span id="midterm-countdown-badge" class="text-xs font-black text-rose-600">未設定</span>
+                                </div>
+                                <input type="date" id="midterm-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-rose-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-rose-400 w-full sm:w-auto">
+                            </div>
+                        </div>
+
+                        <!-- 期末考 -->
+                        <div class="bg-white p-3.5 rounded-xl border border-indigo-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-black text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded-md">🏆 期末考</span>
+                                    <span id="finalexam-countdown-badge" class="text-xs font-black text-indigo-600">未設定</span>
+                                </div>
+                                <input type="date" id="finalexam-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-indigo-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-indigo-400 w-full sm:w-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-sm text-gray-500 mb-2">
                     <div class="py-2 text-rose-500">日</div>
                     <div class="py-2">一</div>
@@ -614,26 +603,28 @@
 
     </main>
 
-    <!-- Modal: JSONBin Cloud Sync (簡化版：已固化金鑰) -->
+    <!-- Modal: JSONBin Cloud Sync (靜態狀態 Modal) -->
     <div id="jsonbin-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-sky-300">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-sky-300 text-center">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-black text-sky-800 font-fun flex items-center gap-2">
-                    ☁️ 一鍵雲端同步
+                    ☁️ 全自動雲端同步模式
                 </h3>
                 <button onclick="closeModal('jsonbin-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
             </div>
             
-            <p class="text-xs text-gray-500 mb-6 leading-relaxed font-bold text-center">
-                金鑰已綁定！點擊上方按鈕即可在跨裝置間同步最新資料[cite: 1]。
+            <p class="text-xs text-gray-600 mb-6 leading-relaxed font-bold">
+                🎉 本系統已升級為全自動雲端同步！<br><br>
+                每次修改欄位時，系統都會在背景默默自動上傳。<br>
+                每次打開網頁時，也會自動載入最新的雲端進度，不需要任何手動操作喔！
             </p>
 
             <div class="space-y-3">
-                <button onclick="uploadToJsonbin()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
-                    <i class="fa-solid fa-cloud-arrow-up text-base"></i> 將這台電腦的資料【上傳備份】
+                <button onclick="uploadToJsonbin()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> 強制重新上傳備份
                 </button>
-                <button onclick="downloadFromJsonbin()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
-                    <i class="fa-solid fa-cloud-arrow-down text-base"></i> 從雲端【下載最新資料】復原
+                <button onclick="downloadFromJsonbin()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-2xl shadow transition flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> 強制從雲端重新整理
                 </button>
             </div>
         </div>
@@ -680,6 +671,46 @@
             </div>
 
             <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-80 overflow-y-auto p-1" id="pokemon-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Custom Habit -->
+    <div id="habit-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-amber-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-amber-900 font-fun flex items-center gap-2">
+                    ⚡ 新增習慣打卡項目
+                </h3>
+                <button onclick="closeModal('habit-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+            </div>
+            
+            <form onsubmit="handleSaveHabit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">習慣名稱</label>
+                    <input type="text" id="habit-title-input" placeholder="例如：主動閱讀30分鐘" required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-amber-400 font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">提示 / 說明</label>
+                    <input type="text" id="habit-desc-input" placeholder="例如：好棒！看書增加知識" class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-amber-400 font-medium">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">圖示 (Emoji)</label>
+                        <input type="text" id="habit-icon-input" placeholder="例如: 📚" value="⭐" required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm text-center focus:outline-none focus:border-amber-400 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">獎勵/扣金額 ($)</label>
+                        <input type="number" id="habit-amount-input" placeholder="正數加錢，負數扣錢" value="5" required class="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-amber-400 font-medium">
+                    </div>
+                </div>
+
+                <div class="mt-6 flex gap-2">
+                    <button type="button" onclick="closeModal('habit-modal')" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-2xl transition">取消</button>
+                    <button type="submit" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-2xl shadow transition">確定新增 ⚡</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -800,7 +831,9 @@
         const JSONBIN_BIN_ID = "6ac66111ffd5d16053565db5";
         const JSONBIN_MASTER_KEY = "$2a$10$KVGpf7ukEs3dfl6SCbrEMetrSOIKh2l94l9w2eAkpYfSVf46BDe6y";
 
-        /* ================= Data Structures ================= */
+        /* ================= User Selector & Isolated States ================= */
+        let currentUser = 'sister'; // Default to sister
+
         const POKEMON_LIST = [
             { id: 25, name: "皮卡丘", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
             { id: 4, name: "小火龍", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" },
@@ -854,6 +887,15 @@
             { id: 5, text: "帶餐具", done: false }
         ];
 
+        const DEFAULT_HABITS = [
+            { id: 1, name: "沒遲到", desc: "今天準時到校", amount: 5, icon: "⏰", theme: "emerald" },
+            { id: 2, name: "餐飯有吃完", desc: "不挑食好乖！", amount: 5, icon: "🥣", theme: "amber" },
+            { id: 3, name: "遲到扣扣", desc: "下次要提早出門", amount: -2, icon: "🏃", theme: "rose" },
+            { id: 4, name: "樂獅遲到", desc: "樂獅補習班遲到扣扣", amount: -1, icon: "🦁", theme: "orange" },
+            { id: 5, name: "沒吃完飯扣扣", desc: "要珍惜食物喔", amount: -2, icon: "🥦", theme: "rose" },
+            { id: 6, name: "超過十點睡覺", desc: "太晚睡身體會累累，要早點休息喔！", amount: -1, icon: "🌙", theme: "purple" }
+        ];
+
         const DEFAULT_EXAMS = {
             chinese: [
                 { id: 201, text: "第 1-2 課課後複習卷", done: false },
@@ -880,31 +922,95 @@
             { id: 2, title: "彩色雙頭繪畫筆", price: 50 }
         ];
 
-        let appState = {
-            mainTitle: "三年級學習大冒險！",
-            pokemonId: 25,
-            stars: 0,
-            pocketMoney: 0,
-            weeklyChoresCount: 0,
-            moneyHistory: [],
-            wishlist: JSON.parse(JSON.stringify(DEFAULT_WISHLIST)),
-            checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
-            exams: JSON.parse(JSON.stringify(DEFAULT_EXAMS)),
-            todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
-            timetable: JSON.parse(JSON.stringify(DEFAULT_TIMETABLE)),
-            events: {
-                "2026-10-15": [{ title: "第二次國語聽寫測驗", tag: "段考" }],
-                "2026-10-28": [{ title: "校外教學 (動物園)", tag: "校外教學" }]
-            }
+        function createInitialState(defaultTitle, pokemonId) {
+            return {
+                mainTitle: defaultTitle,
+                pokemonId: pokemonId,
+                stars: 0,
+                pocketMoney: 0,
+                weeklyChoresCount: 0,
+                moneyHistory: [],
+                examDates: { midterm: "", finalexam: "" },
+                habits: JSON.parse(JSON.stringify(DEFAULT_HABITS)),
+                wishlist: JSON.parse(JSON.stringify(DEFAULT_WISHLIST)),
+                checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
+                exams: JSON.parse(JSON.stringify(DEFAULT_EXAMS)),
+                todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
+                timetable: JSON.parse(JSON.stringify(DEFAULT_TIMETABLE)),
+                events: {
+                    "2026-10-15": [{ title: "第二次國語聽寫測驗", tag: "段考" }],
+                    "2026-10-28": [{ title: "校外教學 (動物園)", tag: "校外教學" }]
+                }
+            };
+        }
+
+        // Parent container for both users' data
+        let usersData = {
+            sister: createInitialState("姊姊的學習大冒險！", 25),
+            brother: createInitialState("弟弟的學習大冒險！", 4)
         };
+
+        // Pointer helper to active user state
+        let appState = usersData.sister;
 
         let currentCalendarDate = new Date(2026, 9, 1);
         let activePaletteSubject = null;
         let activeEditingCell = null;
 
+        /* Switch Active User */
+        function switchUser(userKey) {
+            currentUser = userKey;
+            appState = usersData[currentUser];
+            document.getElementById('user-selector').value = userKey;
+            
+            // Adjust visual accents depending on active user
+            const header = document.getElementById('main-header');
+            if (userKey === 'sister') {
+                header.className = "bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 shadow-md border-b-4 border-amber-400 transition-colors duration-300";
+            } else {
+                header.className = "bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 shadow-md border-b-4 border-sky-400 transition-colors duration-300";
+            }
+
+            saveToLocalStorage();
+            renderAllViews();
+        }
+
         /* ================= Initialization & Storage ================= */
-        window.onload = function() {
-            loadFromLocalStorage();
+        window.onload = async function() {
+            // 優先嘗試從雲端下載最新資料（實現跨平台全自動同步）
+            updateCloudStatus('syncing');
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.record) {
+                        if (data.record.sister && data.record.brother) {
+                            usersData = data.record;
+                        } else if (typeof data.record === 'object') {
+                            usersData.sister = { ...usersData.sister, ...data.record };
+                        }
+                        const savedUser = localStorage.getItem('grade3_current_user') || 'sister';
+                        currentUser = savedUser;
+                        appState = usersData[currentUser];
+                        localStorage.setItem('grade3_app_users_data', JSON.stringify(usersData));
+                        updateCloudStatus('online');
+                    }
+                } else {
+                    loadFromLocalStorage();
+                    updateCloudStatus('error');
+                }
+            } catch (err) {
+                console.log("網路連線失敗或雲端讀取失敗，改用本地資料:", err);
+                loadFromLocalStorage();
+                updateCloudStatus('offline');
+            }
+
             updateHeaderDate();
             renderAllViews();
         };
@@ -918,6 +1024,7 @@
             renderTodos();
             renderSubjectPalette();
             renderTimetable();
+            renderExamCountdowns();
             renderCalendar();
             updateHeaderDisplays();
         }
@@ -926,7 +1033,7 @@
         function renderMainTitle() {
             const titleEl = document.getElementById('main-title-text');
             if (titleEl) {
-                titleEl.textContent = appState.mainTitle || "三年級學習大冒險！";
+                titleEl.textContent = appState.mainTitle || (currentUser === 'sister' ? "姊姊的學習大冒險！" : "弟弟的學習大冒險！");
             }
         }
 
@@ -938,7 +1045,7 @@
                 if (newTitle) {
                     appState.mainTitle = newTitle;
                 } else {
-                    appState.mainTitle = "三年級學習大冒險！";
+                    appState.mainTitle = currentUser === 'sister' ? "姊姊的學習大冒險！" : "弟弟的學習大冒險！";
                     titleEl.textContent = appState.mainTitle;
                 }
                 saveToLocalStorage();
@@ -953,38 +1060,77 @@
             }
         }
 
+        // 修改儲存函式：同時寫入本地端與「背景全自動上傳雲端」
         function saveToLocalStorage() {
-            localStorage.setItem('grade3_app_state', JSON.stringify(appState));
+            localStorage.setItem('grade3_app_users_data', JSON.stringify(usersData));
+            localStorage.setItem('grade3_current_user', currentUser);
+
+            // 背景全自動同步上傳
+            updateCloudStatus('syncing');
+            fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_MASTER_KEY
+                },
+                body: JSON.stringify(usersData)
+            }).then(res => {
+                if (res.ok) {
+                    updateCloudStatus('online');
+                } else {
+                    updateCloudStatus('error');
+                }
+            }).catch(err => {
+                console.log("背景自動同步失敗:", err);
+                updateCloudStatus('offline');
+            });
         }
 
-        function loadFromLocalStorage() {
-            const saved = localStorage.getItem('grade3_app_state');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    appState = {
-                        ...appState,
-                        ...parsed,
-                        mainTitle: parsed.mainTitle || appState.mainTitle,
-                        events: parsed.events || appState.events,
-                        checklist: parsed.checklist || appState.checklist,
-                        exams: parsed.exams || appState.exams,
-                        todos: parsed.todos || appState.todos,
-                        wishlist: parsed.wishlist || appState.wishlist,
-                        timetable: parsed.timetable || appState.timetable
-                    };
-                } catch(e) {
-                    console.error("Failed to load state", e);
-                }
+        function updateCloudStatus(status) {
+            const btn = document.getElementById('cloud-status-btn');
+            const text = document.getElementById('cloud-status-text');
+            if (!btn || !text) return;
+
+            if (status === 'syncing') {
+                btn.className = "ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1.5 bg-amber-500 text-white shadow animate-pulse";
+                text.textContent = "雲端同步中...";
+            } else if (status === 'online') {
+                btn.className = "ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1.5 bg-emerald-500 text-white shadow";
+                text.textContent = "雲端已同步";
+            } else {
+                btn.className = "ml-auto text-xs font-bold px-3 py-2.5 rounded-2xl transition flex items-center gap-1.5 bg-rose-500 text-white shadow";
+                text.textContent = "使用離線模式";
             }
         }
 
-        /* ================= JSONBin.io Cloud Sync (Fixed Credentials) ================= */
+        function loadFromLocalStorage() {
+            const savedUser = localStorage.getItem('grade3_current_user');
+            if (savedUser && (savedUser === 'sister' || savedUser === 'brother')) {
+                currentUser = savedUser;
+            }
+
+            const saved = localStorage.getItem('grade3_app_users_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.sister) usersData.sister = { ...usersData.sister, ...parsed.sister };
+                    if (parsed.brother) usersData.brother = { ...usersData.brother, ...parsed.brother };
+                } catch(e) {
+                    console.error("Failed to load users data", e);
+                }
+            }
+
+            appState = usersData[currentUser];
+            document.getElementById('user-selector').value = currentUser;
+        }
+
+        /* ================= JSONBin.io Cloud Sync (雲端手動觸發備用) ================= */
         function openJsonbinModal() {
             document.getElementById('jsonbin-modal').classList.remove('hidden');
         }
 
         async function uploadToJsonbin() {
+            updateCloudStatus('syncing');
             try {
                 const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                     method: 'PUT',
@@ -992,21 +1138,25 @@
                         'Content-Type': 'application/json',
                         'X-Master-Key': JSONBIN_MASTER_KEY
                     },
-                    body: JSON.stringify(appState)
+                    body: JSON.stringify(usersData)
                 });
 
                 if (res.ok) {
-                    alert("☁️ 🎉 成功將最新資料上傳備份至雲端！");
+                    updateCloudStatus('online');
+                    alert("☁️ 🎉 成功將最新資料備份至雲端！");
                     closeModal('jsonbin-modal');
                 } else {
+                    updateCloudStatus('error');
                     alert("⚠️ 上傳失敗，請稍後再試。");
                 }
             } catch (err) {
+                updateCloudStatus('offline');
                 alert("⚠️ 雲端連線失敗：" + err.message);
             }
         }
 
         async function downloadFromJsonbin() {
+            updateCloudStatus('syncing');
             try {
                 const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                     method: 'GET',
@@ -1018,16 +1168,24 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.record) {
-                        appState = { ...appState, ...data.record };
+                        if (data.record.sister && data.record.brother) {
+                            usersData = data.record;
+                        } else {
+                            usersData.sister = { ...usersData.sister, ...data.record };
+                        }
+                        appState = usersData[currentUser];
                         saveToLocalStorage();
                         renderAllViews();
+                        updateCloudStatus('online');
                         alert("☁️ 🎉 成功從雲端同步下載最新資料！");
                         closeModal('jsonbin-modal');
                     }
                 } else {
+                    updateCloudStatus('error');
                     alert("⚠️ 下載失敗，請稍後再試。");
                 }
             } catch (err) {
+                updateCloudStatus('offline');
                 alert("⚠️ 雲端連線失敗：" + err.message);
             }
         }
@@ -1038,7 +1196,7 @@
         }
 
         function exportDataBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(usersData, null, 2));
             const downloadAnchor = document.createElement('a');
             const dateToday = new Date().toISOString().split('T')[0];
             downloadAnchor.setAttribute("href", dataStr);
@@ -1055,16 +1213,17 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const importedState = JSON.parse(e.target.result);
-                    if (typeof importedState === 'object' && importedState !== null) {
-                        appState = { ...appState, ...importedState };
-                        saveToLocalStorage();
-                        renderAllViews();
-                        alert("🎉 資料成功復原！");
-                        closeModal('backup-modal');
-                    } else {
-                        alert("⚠️ 備份檔案格式不正確！");
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData.sister && importedData.brother) {
+                        usersData = importedData;
+                    } else if (typeof importedData === 'object' && importedData !== null) {
+                        usersData[currentUser] = { ...usersData[currentUser], ...importedData };
                     }
+                    appState = usersData[currentUser];
+                    saveToLocalStorage();
+                    renderAllViews();
+                    alert("🎉 資料成功復原！");
+                    closeModal('backup-modal');
                 } catch(err) {
                     alert("⚠️ 無法讀取此備份檔案！");
                 }
@@ -1277,12 +1436,109 @@
             }
         }
 
-        /* ================= Money System ================= */
+        /* ================= Money System & Dynamic Habits ================= */
         function renderMoneyTab() {
             updateHeaderDisplays();
+            renderHabitRules();
             renderMoneyHistory();
             renderChoreStamps();
             renderWishlist();
+        }
+
+        function renderHabitRules() {
+            const container = document.getElementById('habit-rules-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!appState.habits) {
+                appState.habits = JSON.parse(JSON.stringify(DEFAULT_HABITS));
+            }
+
+            const themeStyles = {
+                emerald: { bg: 'bg-emerald-50 hover:bg-emerald-100 border-emerald-200', iconBg: 'bg-emerald-500', title: 'text-emerald-900', desc: 'text-emerald-700', badge: 'bg-emerald-600' },
+                amber: { bg: 'bg-amber-50 hover:bg-amber-100 border-amber-200', iconBg: 'bg-amber-500', title: 'text-amber-900', desc: 'text-amber-700', badge: 'bg-amber-500' },
+                rose: { bg: 'bg-rose-50 hover:bg-rose-100 border-rose-200', iconBg: 'bg-rose-400', title: 'text-rose-900', desc: 'text-rose-700', badge: 'bg-rose-500' },
+                orange: { bg: 'bg-orange-50 hover:bg-orange-100 border-orange-200', iconBg: 'bg-orange-400', title: 'text-orange-900', desc: 'text-orange-700', badge: 'bg-orange-500' },
+                purple: { bg: 'bg-purple-50 hover:bg-purple-100 border-purple-200', iconBg: 'bg-purple-500', title: 'text-purple-900', desc: 'text-purple-700', badge: 'bg-purple-600' },
+                sky: { bg: 'bg-sky-50 hover:bg-sky-100 border-sky-200', iconBg: 'bg-sky-500', title: 'text-sky-900', desc: 'text-sky-700', badge: 'bg-sky-600' }
+            };
+
+            appState.habits.forEach((habit) => {
+                const amountVal = parseInt(habit.amount);
+                const isPositive = amountVal >= 0;
+                let t = themeStyles[habit.theme];
+                if (!t) {
+                    t = isPositive ? themeStyles.emerald : themeStyles.rose;
+                }
+
+                const card = document.createElement('div');
+                card.className = `${t.bg} border-2 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 flex items-center justify-between group relative`;
+                card.onclick = () => addMoneyTransaction(`${habit.name} ${habit.icon || '⭐'}`, amountVal);
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl ${t.iconBg} text-white flex items-center justify-center text-xl shadow">
+                            ${habit.icon || '⭐'}
+                        </div>
+                        <div>
+                            <div class="font-black ${t.title} text-sm">${habit.name}</div>
+                            <div class="text-[11px] ${t.desc} font-bold">${habit.desc || ''}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="${t.badge} text-white font-black text-xs px-3 py-1.5 rounded-xl shadow group-hover:scale-105 transition">
+                            ${isPositive ? '+' : ''}${amountVal} 元
+                        </span>
+                        <button onclick="event.stopPropagation(); deleteHabit(${habit.id})" class="text-gray-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition text-xs p-1" title="刪除此項目">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openHabitModal() {
+            document.getElementById('habit-title-input').value = '';
+            document.getElementById('habit-desc-input').value = '';
+            document.getElementById('habit-icon-input').value = '⭐';
+            document.getElementById('habit-amount-input').value = '5';
+            document.getElementById('habit-modal').classList.remove('hidden');
+        }
+
+        function handleSaveHabit(e) {
+            e.preventDefault();
+            const title = document.getElementById('habit-title-input').value.trim();
+            const desc = document.getElementById('habit-desc-input').value.trim();
+            const icon = document.getElementById('habit-icon-input').value.trim() || '⭐';
+            const amount = parseInt(document.getElementById('habit-amount-input').value);
+
+            if (!title || isNaN(amount)) return;
+
+            if (!appState.habits) appState.habits = [];
+
+            const theme = amount >= 0 ? 'emerald' : 'rose';
+
+            appState.habits.push({
+                id: Date.now(),
+                name: title,
+                desc: desc,
+                amount: amount,
+                icon: icon,
+                theme: theme
+            });
+
+            saveToLocalStorage();
+            renderHabitRules();
+            closeModal('habit-modal');
+        }
+
+        function deleteHabit(id) {
+            if (confirm("確定要刪除這個習慣打卡項目嗎？")) {
+                appState.habits = appState.habits.filter(h => h.id !== id);
+                saveToLocalStorage();
+                renderHabitRules();
+            }
         }
 
         function addMoneyTransaction(reason, amount) {
@@ -1564,61 +1820,26 @@
                         <span class="text-xs px-2.5 py-1 rounded-xl font-bold ${catBadgeClass}">${todo.category}</span>
                         <span class="text-sm font-bold ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}">${todo.text}</span>
                     </div>
-                    <button onclick="deleteTodo(${todo.id})" class="text-gray-300 hover:text-rose-500 p-1.5 transition" title="刪除">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
+                    <button onclick="deleteTodo(${todo.id})" class="text-gray-300 hover:text-rose-500 font-bold px-2">✕</button>
                 `;
                 container.appendChild(itemEl);
             });
         }
 
-        function getCategoryBadgeStyle(category) {
-            switch(category) {
-                case '作業': return 'bg-blue-100 text-blue-700';
-                case '帶物品': return 'bg-emerald-100 text-emerald-700';
-                case '考試': return 'bg-rose-100 text-rose-700';
-                default: return 'bg-purple-100 text-purple-700';
+        function getCategoryBadgeStyle(cat) {
+            switch(cat) {
+                case '作業': return 'bg-blue-100 text-blue-800';
+                case '帶物品': return 'bg-emerald-100 text-emerald-800';
+                case '考試': return 'bg-rose-100 text-rose-800';
+                default: return 'bg-amber-100 text-amber-800';
             }
-        }
-
-        function handleCustomTodoSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('todo-input');
-            const category = document.getElementById('todo-category').value;
-            const text = input.value.trim();
-
-            if (!text) return;
-
-            appState.todos.push({
-                id: Date.now(),
-                text: text,
-                category: category,
-                completed: false
-            });
-
-            input.value = '';
-            saveToLocalStorage();
-            renderTodos();
-        }
-
-        function addPresetTodo(text, category) {
-            appState.todos.push({
-                id: Date.now(),
-                text: text,
-                category: category,
-                completed: false
-            });
-            saveToLocalStorage();
-            renderTodos();
         }
 
         function toggleTodo(id) {
             const todo = appState.todos.find(t => t.id === id);
             if (todo) {
                 todo.completed = !todo.completed;
-                if (todo.completed) {
-                    addStars(2);
-                }
+                if (todo.completed) addStars(1);
                 saveToLocalStorage();
                 renderTodos();
             }
@@ -1630,35 +1851,72 @@
             renderTodos();
         }
 
+        function handleCustomTodoSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('todo-input');
+            const cat = document.getElementById('todo-category').value;
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            appState.todos.push({
+                id: Date.now(),
+                text: text,
+                category: cat,
+                completed: false
+            });
+
+            input.value = '';
+            saveToLocalStorage();
+            renderTodos();
+        }
+
+        function addPresetTodo(text, cat) {
+            appState.todos.push({
+                id: Date.now(),
+                text: text,
+                category: cat,
+                completed: false
+            });
+            saveToLocalStorage();
+            renderTodos();
+        }
+
         function filterTodo(cat) {
             currentTodoFilter = cat;
             document.querySelectorAll('.todo-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-white');
-                btn.classList.add('bg-gray-100', 'text-gray-600');
+                btn.className = 'todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200';
             });
-            document.getElementById(`filter-${cat}`).classList.remove('bg-gray-100', 'text-gray-600');
-            document.getElementById(`filter-${cat}`).classList.add('bg-amber-500', 'text-white');
+            const activeBtn = document.getElementById(`filter-${cat}`);
+            if (activeBtn) activeBtn.className = 'todo-filter-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500 text-white';
             renderTodos();
         }
 
         /* ================= Timetable Logic ================= */
         function renderSubjectPalette() {
-            const container = document.getElementById('subject-palette');
-            container.innerHTML = '';
+            const palette = document.getElementById('subject-palette');
+            palette.innerHTML = '';
 
-            SUBJECT_LIST.forEach(sub => {
+            SUBJECT_LIST.forEach(subj => {
                 const btn = document.createElement('button');
-                btn.className = `text-xs font-bold px-3 py-1.5 rounded-xl border transition ${sub.class} hover:scale-105 active:scale-95`;
-                btn.innerHTML = `${sub.icon} ${sub.name}`;
-                btn.onclick = () => selectPaletteSubject(sub);
-                container.appendChild(btn);
+                btn.className = `px-3 py-1.5 rounded-xl font-bold text-xs border flex items-center gap-1 transition ${subj.class} hover:opacity-80`;
+                btn.innerHTML = `<span>${subj.icon}</span><span>${subj.name}</span>`;
+                btn.onclick = () => selectPaletteSubject(subj);
+                palette.appendChild(btn);
             });
         }
 
-        function selectPaletteSubject(sub) {
-            activePaletteSubject = sub;
-            document.getElementById('selected-palette-info').classList.remove('hidden');
-            document.getElementById('active-palette-name').textContent = `${sub.icon} ${sub.name}`;
+        function selectPaletteSubject(subj) {
+            activePaletteSubject = subj;
+            const info = document.getElementById('selected-palette-info');
+            const activeName = document.getElementById('active-palette-name');
+
+            if (subj) {
+                info.classList.remove('hidden');
+                activeName.textContent = subj.name;
+            } else {
+                info.classList.add('hidden');
+            }
         }
 
         function renderTimetable() {
@@ -1667,61 +1925,58 @@
 
             appState.timetable.forEach((row, rowIndex) => {
                 const tr = document.createElement('tr');
-                
-                const periodTd = document.createElement('td');
-                periodTd.className = "p-2 bg-gray-50 border-r border-gray-100";
-                periodTd.innerHTML = `
-                    <div class="text-sky-900 font-black">${row.period}</div>
-                    <div class="text-[10px] text-gray-400 font-normal">${row.time}</div>
+                tr.className = "hover:bg-gray-50/50 transition";
+
+                let periodTd = `
+                    <td class="p-3 bg-sky-50/50 border-r border-gray-100">
+                        <div class="font-black text-sky-900">${row.period}</div>
+                        <div class="text-[10px] text-gray-400 font-normal">${row.time}</div>
+                    </td>
                 `;
-                tr.appendChild(periodTd);
 
-                row.subjects.forEach((subjName, dayIndex) => {
-                    const td = document.createElement('td');
-                    td.className = "p-1.5 border border-gray-100";
-
-                    const subjectObj = SUBJECT_LIST.find(s => s.name === subjName) || { name: subjName, class: 'bg-gray-50 text-gray-700 border-gray-200', icon: '📝' };
-
-                    const cellBtn = document.createElement('button');
-                    cellBtn.className = `w-full py-2.5 px-2 rounded-xl border text-xs font-bold transition duration-200 hover:shadow-md ${subjectObj.class}`;
-                    cellBtn.innerHTML = `<span>${subjectObj.icon || ''}</span> <span>${subjName}</span>`;
+                let subjectsTd = '';
+                row.subjects.forEach((subjName, colIndex) => {
+                    const subjObj = SUBJECT_LIST.find(s => s.name === subjName) || { name: subjName, class: 'bg-gray-100 text-gray-700 border-gray-200', icon: '📌' };
                     
-                    cellBtn.onclick = () => handleCellClick(rowIndex, dayIndex);
-
-                    td.appendChild(cellBtn);
-                    tr.appendChild(td);
+                    subjectsTd += `
+                        <td class="p-2 cursor-pointer transition transform hover:scale-105" onclick="handleCellClick(${rowIndex}, ${colIndex})">
+                            <div class="py-2 px-1 rounded-xl border font-bold text-xs flex flex-col sm:flex-row items-center justify-center gap-1 shadow-sm ${subjObj.class}">
+                                <span>${subjObj.icon || '📌'}</span>
+                                <span>${subjObj.name}</span>
+                            </div>
+                        </td>
+                    `;
                 });
 
+                tr.innerHTML = periodTd + subjectsTd;
                 tbody.appendChild(tr);
             });
         }
 
-        function handleCellClick(rowIndex, dayIndex) {
+        function handleCellClick(rowIndex, colIndex) {
             if (activePaletteSubject) {
-                appState.timetable[rowIndex].subjects[dayIndex] = activePaletteSubject.name;
+                appState.timetable[rowIndex].subjects[colIndex] = activePaletteSubject.name;
                 saveToLocalStorage();
                 renderTimetable();
             } else {
-                activeEditingCell = { rowIndex, dayIndex };
-                openSubjectModal();
+                openSubjectModal(rowIndex, colIndex);
             }
         }
 
-        function openSubjectModal() {
+        function openSubjectModal(rowIndex, colIndex) {
+            activeEditingCell = { rowIndex, colIndex };
             const grid = document.getElementById('subject-options-grid');
             grid.innerHTML = '';
 
-            SUBJECT_LIST.forEach(sub => {
+            SUBJECT_LIST.forEach(subj => {
                 const btn = document.createElement('button');
-                btn.className = `p-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${sub.class}`;
-                btn.innerHTML = `${sub.icon} ${sub.name}`;
+                btn.className = `p-2 rounded-xl font-bold text-xs border flex items-center justify-center gap-1 transition ${subj.class}`;
+                btn.innerHTML = `<span>${subj.icon}</span><span>${subj.name}</span>`;
                 btn.onclick = () => {
-                    if (activeEditingCell) {
-                        appState.timetable[activeEditingCell.rowIndex].subjects[activeEditingCell.dayIndex] = sub.name;
-                        saveToLocalStorage();
-                        renderTimetable();
-                        closeModal('subject-modal');
-                    }
+                    appState.timetable[rowIndex].subjects[colIndex] = subj.name;
+                    saveToLocalStorage();
+                    renderTimetable();
+                    closeModal('subject-modal');
                 };
                 grid.appendChild(btn);
             });
@@ -1730,7 +1985,7 @@
         }
 
         function resetTimetableConfirm() {
-            if (confirm("確定要將課表恢復成預設範本嗎？")) {
+            if (confirm("確定要將課表恢復成預設課表嗎？")) {
                 appState.timetable = JSON.parse(JSON.stringify(DEFAULT_TIMETABLE));
                 saveToLocalStorage();
                 renderTimetable();
@@ -1747,60 +2002,60 @@
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            const calendarDays = document.getElementById('calendar-days');
-            calendarDays.innerHTML = '';
+            const daysContainer = document.getElementById('calendar-days');
+            daysContainer.innerHTML = '';
 
             for (let i = 0; i < firstDay; i++) {
-                const emptySlot = document.createElement('div');
-                emptySlot.className = "h-20 bg-gray-50/50 rounded-2xl border border-dashed border-gray-100";
-                calendarDays.appendChild(emptySlot);
+                const emptyCell = document.createElement('div');
+                emptyCell.className = "h-20 sm:h-24 bg-gray-50/50 rounded-2xl border border-dashed border-gray-100";
+                daysContainer.appendChild(emptyCell);
             }
 
-            const todayStr = new Date().toISOString().split('T')[0];
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const isToday = dateKey === todayStr;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayCell = document.createElement('div');
 
-                const dayCard = document.createElement('div');
-                dayCard.className = `h-20 md:h-24 p-1.5 rounded-2xl border-2 flex flex-col justify-between transition cursor-pointer hover:border-purple-300 hover:shadow-sm ${isToday ? 'bg-purple-50 border-purple-400' : 'bg-white border-gray-100'}`;
+                const isToday = dateStr === todayStr;
+                const events = (appState.events && appState.events[dateStr]) || [];
+
+                dayCell.className = `h-20 sm:h-24 p-1.5 rounded-2xl border-2 transition flex flex-col justify-between cursor-pointer ${isToday ? 'bg-purple-50 border-purple-400 font-black' : 'bg-white border-gray-100 hover:border-purple-200'}`;
                 
-                let dayHeader = `<div class="flex justify-between items-center"><span class="text-xs font-black ${isToday ? 'bg-purple-600 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-gray-700'}">${day}</span>`;
-                dayHeader += `<button onclick="openAddEventModal('${dateKey}')" class="text-[10px] text-gray-300 hover:text-purple-600"><i class="fa-solid fa-plus"></i></button></div>`;
+                let eventsHtml = '';
+                events.forEach((ev, evIndex) => {
+                    const tagBg = getTagBadgeStyle(ev.tag);
+                    eventsHtml += `
+                        <div class="text-[10px] px-1 py-0.5 rounded font-bold truncate flex items-center justify-between ${tagBg} mb-0.5">
+                            <span class="truncate">${ev.title}</span>
+                            <span onclick="event.stopPropagation(); deleteCalendarEvent('${dateStr}', ${evIndex})" class="hover:text-rose-600 ml-0.5">✕</span>
+                        </div>
+                    `;
+                });
 
-                let eventsHtml = '<div class="space-y-1 overflow-y-auto max-h-14">';
-                if (appState.events && appState.events[dateKey]) {
-                    appState.events[dateKey].forEach((ev, idx) => {
-                        const tagColor = getEventTagColor(ev.tag);
-                        eventsHtml += `
-                            <div class="text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${tagColor} truncate flex items-center justify-between group">
-                                <span>${ev.title}</span>
-                                <button onclick="deleteEvent('${dateKey}', ${idx}, event)" class="hidden group-hover:block text-rose-500 hover:text-rose-700 ml-1">✕</button>
-                            </div>
-                        `;
-                    });
-                }
-                eventsHtml += '</div>';
+                dayCell.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs ${isToday ? 'text-purple-700 font-black bg-purple-200 px-1.5 py-0.5 rounded-full' : 'text-gray-700 font-bold'}">${day}</span>
+                        <span onclick="event.stopPropagation(); openEventModal('${dateStr}')" class="text-[10px] text-purple-400 hover:text-purple-700 font-bold">+</span>
+                    </div>
+                    <div class="overflow-y-auto max-h-14 space-y-0.5 pr-0.5">${eventsHtml}</div>
+                `;
 
-                dayCard.innerHTML = dayHeader + eventsHtml;
-                dayCard.onclick = (e) => {
-                    if (e.target.tagName !== 'I' && e.target.tagName !== 'BUTTON') {
-                        openAddEventModal(dateKey);
-                    }
-                };
-
-                calendarDays.appendChild(dayCard);
+                dayCell.onclick = () => openEventModal(dateStr);
+                daysContainer.appendChild(dayCell);
             }
         }
 
-        function getEventTagColor(tag) {
+        function getTagBadgeStyle(tag) {
             switch(tag) {
                 case '段考': return 'bg-rose-100 text-rose-800';
                 case '校外教學': return 'bg-emerald-100 text-emerald-800';
-                case '生日': return 'bg-pink-100 text-pink-800';
-                case '補習': return 'bg-purple-100 text-purple-800';
+                case '活動': return 'bg-amber-100 text-amber-800';
                 case '作業': return 'bg-blue-100 text-blue-800';
-                default: return 'bg-amber-100 text-amber-800';
+                case '補習': return 'bg-purple-100 text-purple-800';
+                case '生日': return 'bg-pink-100 text-pink-800';
+                default: return 'bg-gray-100 text-gray-800';
             }
         }
 
@@ -1814,163 +2069,170 @@
             renderCalendar();
         }
 
-        function openAddEventModal(dateKey) {
-            document.getElementById('event-date-input').value = dateKey;
-            document.getElementById('modal-date-title').textContent = `新增活動 (${dateKey})`;
+        function openEventModal(dateStr) {
+            document.getElementById('modal-date-title').textContent = `${dateStr} 新增活動`;
+            document.getElementById('event-date-input').value = dateStr;
             document.getElementById('event-title-input').value = '';
             document.getElementById('event-modal').classList.remove('hidden');
         }
 
         function handleSaveCalendarEvent(e) {
             e.preventDefault();
-            const dateKey = document.getElementById('event-date-input').value;
+            const dateStr = document.getElementById('event-date-input').value;
             const title = document.getElementById('event-title-input').value.trim();
             const tag = document.querySelector('input[name="event-tag"]:checked').value;
 
             if (!title) return;
 
-            if (!appState.events[dateKey]) {
-                appState.events[dateKey] = [];
-            }
+            if (!appState.events) appState.events = {};
+            if (!appState.events[dateStr]) appState.events[dateStr] = [];
 
-            appState.events[dateKey].push({ title, tag });
+            appState.events[dateStr].push({ title, tag });
+
             saveToLocalStorage();
             renderCalendar();
             closeModal('event-modal');
         }
 
-        function deleteEvent(dateKey, index, e) {
-            e.stopPropagation();
-            if (appState.events[dateKey]) {
-                appState.events[dateKey].splice(index, 1);
-                if (appState.events[dateKey].length === 0) {
-                    delete appState.events[dateKey];
+        function deleteCalendarEvent(dateStr, index) {
+            if (appState.events && appState.events[dateStr]) {
+                appState.events[dateStr].splice(index, 1);
+                if (appState.events[dateStr].length === 0) {
+                    delete appState.events[dateStr];
                 }
                 saveToLocalStorage();
                 renderCalendar();
             }
         }
 
-        /* ================= Badges & FX ================= */
+        /* Exam Countdown Logic */
+        function saveExamDates() {
+            const midterm = document.getElementById('midterm-date-input').value;
+            const finalexam = document.getElementById('finalexam-date-input').value;
+
+            if (!appState.examDates) appState.examDates = {};
+            appState.examDates.midterm = midterm;
+            appState.examDates.finalexam = finalexam;
+
+            saveToLocalStorage();
+            renderExamCountdowns();
+        }
+
+        function renderExamCountdowns() {
+            if (!appState.examDates) appState.examDates = { midterm: "", finalexam: "" };
+
+            const midtermInput = document.getElementById('midterm-date-input');
+            const finalInput = document.getElementById('finalexam-date-input');
+
+            if (midtermInput) midtermInput.value = appState.examDates.midterm || '';
+            if (finalInput) finalInput.value = appState.examDates.finalexam || '';
+
+            updateCountdownBadge('midterm-countdown-badge', appState.examDates.midterm);
+            updateCountdownBadge('finalexam-countdown-badge', appState.examDates.finalexam);
+        }
+
+        function updateCountdownBadge(badgeId, targetDateStr) {
+            const badge = document.getElementById(badgeId);
+            if (!badge) return;
+
+            if (!targetDateStr) {
+                badge.textContent = '未設定';
+                badge.className = 'text-xs font-black text-gray-400';
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(targetDateStr);
+            target.setHours(0, 0, 0, 0);
+
+            const diffTime = target - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 0) {
+                badge.textContent = `還有 ${diffDays} 天`;
+                badge.className = 'text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200';
+            } else if (diffDays === 0) {
+                badge.textContent = `就是今天！加油！🎉`;
+                badge.className = 'text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 animate-pulse';
+            } else {
+                badge.textContent = `已結束`;
+                badge.className = 'text-xs font-black text-gray-400';
+            }
+        }
+
+        /* Modal Helpers */
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
         function showBadgeModal() {
             const container = document.getElementById('badges-container');
             container.innerHTML = '';
 
             const stars = appState.stars || 0;
-
-            const badgeList = [
-                { name: "超級新星", minStars: 1, icon: "🌟", desc: "完成第一個任務！" },
-                { name: "準備小達人", minStars: 10, icon: "🎒", desc: "累積獲得 10 顆星星" },
-                { name: "自律小能手", minStars: 25, icon: "🏆", desc: "累積獲得 25 顆星星" },
-                { name: "三年級學霸", minStars: 50, icon: "👑", desc: "累積獲得 50 顆星星" }
+            const badges = [
+                { title: "新星冒險家", req: 5, icon: "⭐" },
+                { title: "學習小達人", req: 15, icon: "🌟" },
+                { title: "知識狂暴者", req: 30, icon: "👑" },
+                { title: "三年級霸主", req: 50, icon: "🏆" }
             ];
 
-            badgeList.forEach(b => {
-                const unlocked = stars >= b.minStars;
-                const div = document.createElement('div');
-                div.className = `flex items-center gap-4 p-3 rounded-2xl border-2 ${unlocked ? 'bg-amber-50 border-amber-300' : 'bg-gray-50 border-gray-200 opacity-60'}`;
-                div.innerHTML = `
-                    <div class="text-3xl p-2 rounded-2xl bg-white shadow-sm">${b.icon}</div>
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-black text-sm text-gray-800">${b.name}</h4>
-                            <span class="text-xs font-bold ${unlocked ? 'text-emerald-600' : 'text-gray-400'}">
-                                ${unlocked ? '已解鎖 🎉' : `需要 ${b.minStars} ⭐`}
-                            </span>
+            badges.forEach(b => {
+                const unlocked = stars >= b.req;
+                const card = document.createElement('div');
+                card.className = `flex items-center justify-between p-3.5 rounded-2xl border-2 ${unlocked ? 'bg-amber-50 border-amber-300' : 'bg-gray-50 border-gray-200 opacity-60'}`;
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">${b.icon}</span>
+                        <div>
+                            <div class="font-black text-amber-900 text-sm">${b.title}</div>
+                            <div class="text-xs text-amber-700">累積滿 ${b.req} 顆星星</div>
                         </div>
-                        <p class="text-xs text-gray-500">${b.desc}</p>
                     </div>
+                    <span class="text-xs font-black px-2.5 py-1 rounded-full ${unlocked ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}">
+                        ${unlocked ? '已解鎖 🎉' : '未解鎖'}
+                    </span>
                 `;
-                container.appendChild(div);
+                container.appendChild(card);
             });
 
             document.getElementById('badge-modal').classList.remove('hidden');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-
+        /* Effects */
         function triggerConfetti() {
-            if (window.confetti) {
-                confetti({
-                    particleCount: 60,
-                    spread: 60,
-                    origin: { y: 0.7 }
-                });
-            }
-            playBeepSound();
-        }
-
-        function triggerCoinConfetti() {
-            if (window.confetti) {
-                confetti({
-                    particleCount: 40,
-                    spread: 50,
-                    colors: ['#f59e0b', '#fbbf24', '#d97706'],
-                    origin: { y: 0.6 }
-                });
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
             }
         }
 
         function triggerConfettiSmall() {
-            if (window.confetti) {
-                confetti({
-                    particleCount: 20,
-                    spread: 40,
-                    origin: { y: 0.2 }
-                });
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
             }
         }
 
-        function playBeepSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-
-                const now = ctx.currentTime;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
-                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
-
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.4);
-            } catch(e) {}
+        function triggerCoinConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0 } });
+            }
         }
 
         function playCoinSound() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-
-                const now = ctx.currentTime;
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
-
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(987.77, now);
-                osc.frequency.setValueAtTime(1318.51, now + 0.08);
-
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1318.51, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.3);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
             } catch(e) {}
         }
     </script>
