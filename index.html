@@ -373,7 +373,7 @@
                         </div>
 
                         <div class="mt-5 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-2 items-center">
-                            <span class="text-xs font-bold text-gray-500 whitespace-nowrap">👨‍👩‍‍👧 家長手動記錄：</span>
+                            <span class="text-xs font-bold text-gray-500 whitespace-nowrap">👨‍👩‍👧 家長手動記錄：</span>
                             <input type="text" id="custom-money-reason" placeholder="原因 (例: 幫忙洗碗)" class="w-full sm:flex-1 bg-gray-50/90 border-2 border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-amber-400">
                             <input type="number" id="custom-money-amount" placeholder="金額 (如 10)" class="w-full sm:w-36 bg-gray-50/90 border-2 border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-amber-400">
                             <button onclick="handleCustomMoneySubmit()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-xl shadow transition whitespace-nowrap">確定新增</button>
@@ -517,26 +517,101 @@
                     </div>
                 </div>
 
+                <!-- 段考倒數計時器 & 考試分數紀錄 -->
                 <div class="mb-6 p-4 bg-gradient-to-r from-rose-50/90 via-purple-50/90 to-indigo-50/90 backdrop-blur-sm rounded-2xl border-2 border-purple-200 shadow-sm">
-                    <h3 class="text-sm font-black text-purple-900 font-fun mb-3 flex items-center gap-2">🎯 段考倒數計時器</h3>
+                    <h3 class="text-sm font-black text-purple-900 font-fun mb-3 flex items-center gap-2">🎯 段考倒數計時器 & 考試分數紀錄</h3>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-white/95 p-3.5 rounded-xl border border-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
+                        <!-- 期中考欄位 -->
+                        <div class="bg-white/95 p-4 rounded-xl border border-rose-200 flex flex-col gap-3 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
                                     <span class="text-xs font-black text-rose-800 bg-rose-100 px-2 py-0.5 rounded-md">💯 期中考</span>
                                     <span id="midterm-countdown-badge" class="text-xs font-black text-rose-600">未設定</span>
                                 </div>
-                                <input type="date" id="midterm-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-rose-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-rose-400 w-full sm:w-auto">
+                                <input type="date" id="midterm-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-rose-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-rose-400">
+                            </div>
+
+                            <!-- 期中考分數紀錄 -->
+                            <div class="pt-2.5 border-t border-rose-100">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[11px] font-black text-rose-800 flex items-center gap-1">
+                                        <i class="fa-solid fa-award text-rose-500"></i> 考試分數紀錄
+                                    </span>
+                                    <span id="midterm-score-summary" class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">尚未登錄分數</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-chinese" class="text-xs font-bold text-rose-900 whitespace-nowrap">國語</label>
+                                        <input type="number" id="midterm-score-chinese" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-math" class="text-xs font-bold text-rose-900 whitespace-nowrap">數學</label>
+                                        <input type="number" id="midterm-score-math" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-science" class="text-xs font-bold text-rose-900 whitespace-nowrap">自然</label>
+                                        <input type="number" id="midterm-score-science" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-social" class="text-xs font-bold text-rose-900 whitespace-nowrap">社會</label>
+                                        <input type="number" id="midterm-score-social" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-english" class="text-xs font-bold text-rose-900 whitespace-nowrap">英文</label>
+                                        <input type="number" id="midterm-score-english" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                    <div class="bg-rose-50/70 border border-rose-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="midterm-score-listening" class="text-xs font-bold text-rose-900 whitespace-nowrap">英聽</label>
+                                        <input type="number" id="midterm-score-listening" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-rose-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-rose-400">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="bg-white/95 p-3.5 rounded-xl border border-indigo-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
+                        <!-- 期末考欄位 -->
+                        <div class="bg-white/95 p-4 rounded-xl border border-indigo-200 flex flex-col gap-3 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
                                     <span class="text-xs font-black text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded-md">🏆 期末考</span>
                                     <span id="finalexam-countdown-badge" class="text-xs font-black text-indigo-600">未設定</span>
                                 </div>
-                                <input type="date" id="finalexam-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-indigo-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-indigo-400 w-full sm:w-auto">
+                                <input type="date" id="finalexam-date-input" onchange="saveExamDates()" class="bg-gray-50 border border-indigo-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none focus:border-indigo-400">
+                            </div>
+
+                            <!-- 期末考分數紀錄 -->
+                            <div class="pt-2.5 border-t border-indigo-100">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[11px] font-black text-indigo-800 flex items-center gap-1">
+                                        <i class="fa-solid fa-award text-indigo-500"></i> 考試分數紀錄
+                                    </span>
+                                    <span id="finalexam-score-summary" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">尚未登錄分數</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-chinese" class="text-xs font-bold text-indigo-900 whitespace-nowrap">國語</label>
+                                        <input type="number" id="finalexam-score-chinese" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-math" class="text-xs font-bold text-indigo-900 whitespace-nowrap">數學</label>
+                                        <input type="number" id="finalexam-score-math" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-science" class="text-xs font-bold text-indigo-900 whitespace-nowrap">自然</label>
+                                        <input type="number" id="finalexam-score-science" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-social" class="text-xs font-bold text-indigo-900 whitespace-nowrap">社會</label>
+                                        <input type="number" id="finalexam-score-social" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-english" class="text-xs font-bold text-indigo-900 whitespace-nowrap">英文</label>
+                                        <input type="number" id="finalexam-score-english" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                    <div class="bg-indigo-50/70 border border-indigo-100 rounded-lg px-2 py-1.5 flex items-center justify-between gap-1">
+                                        <label for="finalexam-score-listening" class="text-xs font-bold text-indigo-900 whitespace-nowrap">英聽</label>
+                                        <input type="number" id="finalexam-score-listening" min="0" max="100" step="0.5" placeholder="分數" oninput="saveExamScores()" class="w-14 bg-white border border-indigo-200 rounded px-1.5 py-0.5 text-xs font-black text-center text-gray-800 focus:outline-none focus:border-indigo-400">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -858,6 +933,15 @@
             { id: 2, title: "彩色雙頭繪畫筆", price: 50 }
         ];
 
+        const EXAM_SCORE_SUBJECTS = ['chinese', 'math', 'science', 'social', 'english', 'listening'];
+
+        function createDefaultExamScores() {
+            return {
+                midterm: { chinese: "", math: "", science: "", social: "", english: "", listening: "" },
+                finalexam: { chinese: "", math: "", science: "", social: "", english: "", listening: "" }
+            };
+        }
+
         function createInitialState(defaultTitle, pokemonId) {
             return {
                 mainTitle: defaultTitle,
@@ -867,6 +951,7 @@
                 weeklyChoresCount: 0,
                 moneyHistory: [],
                 examDates: { midterm: "", finalexam: "" },
+                examScores: createDefaultExamScores(),
                 habits: JSON.parse(JSON.stringify(DEFAULT_HABITS)),
                 wishlist: JSON.parse(JSON.stringify(DEFAULT_WISHLIST)),
                 checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
@@ -925,7 +1010,8 @@
                     const data = await res.json();
                     if (data.record) {
                         if (data.record.sister && data.record.brother) {
-                            usersData = data.record;
+                            usersData.sister = { ...usersData.sister, ...data.record.sister };
+                            usersData.brother = { ...usersData.brother, ...data.record.brother };
                         } else if (typeof data.record === 'object') {
                             usersData.sister = { ...usersData.sister, ...data.record };
                         }
@@ -956,6 +1042,7 @@
             renderSubjectPalette();
             renderTimetable();
             renderExamCountdowns();
+            renderExamScores();
             renderCalendar();
             updateHeaderDisplays();
         }
@@ -1153,7 +1240,8 @@
                     const data = await res.json();
                     if (data.record) {
                         if (data.record.sister && data.record.brother) {
-                            usersData = data.record;
+                            usersData.sister = { ...usersData.sister, ...data.record.sister };
+                            usersData.brother = { ...usersData.brother, ...data.record.brother };
                         } else {
                             usersData.sister = { ...usersData.sister, ...data.record };
                         }
@@ -1970,6 +2058,75 @@
                 badge.textContent = `已結束`;
                 badge.className = 'text-xs font-black text-gray-400';
             }
+        }
+
+        function ensureExamScoresStructure() {
+            if (!appState.examScores) {
+                appState.examScores = createDefaultExamScores();
+            }
+            ['midterm', 'finalexam'].forEach(examType => {
+                if (!appState.examScores[examType]) {
+                    appState.examScores[examType] = { chinese: "", math: "", science: "", social: "", english: "", listening: "" };
+                }
+                EXAM_SCORE_SUBJECTS.forEach(subj => {
+                    if (appState.examScores[examType][subj] === undefined) {
+                        appState.examScores[examType][subj] = "";
+                    }
+                });
+            });
+        }
+
+        function saveExamScores() {
+            ensureExamScoresStructure();
+            ['midterm', 'finalexam'].forEach(examType => {
+                EXAM_SCORE_SUBJECTS.forEach(subj => {
+                    const input = document.getElementById(`${examType}-score-${subj}`);
+                    if (input) {
+                        appState.examScores[examType][subj] = input.value;
+                    }
+                });
+            });
+            updateExamScoreSummaries();
+            saveToLocalStorage();
+        }
+
+        function renderExamScores() {
+            ensureExamScoresStructure();
+            ['midterm', 'finalexam'].forEach(examType => {
+                EXAM_SCORE_SUBJECTS.forEach(subj => {
+                    const input = document.getElementById(`${examType}-score-${subj}`);
+                    if (input) {
+                        input.value = appState.examScores[examType][subj] || '';
+                    }
+                });
+            });
+            updateExamScoreSummaries();
+        }
+
+        function updateExamScoreSummaries() {
+            ensureExamScoresStructure();
+            ['midterm', 'finalexam'].forEach(examType => {
+                const summaryEl = document.getElementById(`${examType}-score-summary`);
+                if (!summaryEl) return;
+
+                let total = 0;
+                let count = 0;
+                EXAM_SCORE_SUBJECTS.forEach(subj => {
+                    const rawVal = appState.examScores[examType][subj];
+                    if (rawVal !== "" && rawVal !== null && !isNaN(parseFloat(rawVal))) {
+                        total += parseFloat(rawVal);
+                        count++;
+                    }
+                });
+
+                if (count === 0) {
+                    summaryEl.textContent = '尚未登錄分數';
+                } else {
+                    const avg = Math.round((total / count) * 10) / 10;
+                    const formattedTotal = Math.round(total * 10) / 10;
+                    summaryEl.textContent = `已登錄 ${count} 科｜總分 ${formattedTotal}｜平均 ${avg}`;
+                }
+            });
         }
 
         function closeModal(modalId) {
